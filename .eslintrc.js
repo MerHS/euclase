@@ -33,6 +33,7 @@ module.exports = {
     'prefer-destructuring': 0,
     'function-paren-newline': 0,
     'object-curly-newline': 0,
+    'linebreak-style': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
