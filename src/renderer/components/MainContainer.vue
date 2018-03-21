@@ -1,7 +1,7 @@
 <template>
   <v-container id="main-container" fluid fill-height>
     <div class="editor-frame">
-      <editor-layout></editor-layout>
+      <!-- <editor-layout></editor-layout> -->
     </div>
   </v-container>
 </template>

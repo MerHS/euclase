@@ -88,7 +88,6 @@ let webConfig = {
       }
     ]
   },
-  devtool: 'source-map',
   plugins: [
     new ExtractTextPlugin('styles.css'),
     new HtmlWebpackPlugin({
