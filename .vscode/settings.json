@@ -1,3 +1,4 @@
 {
-  "javascript.validate.enable": false
+  "editor.fontSize": 12,
+  "editor.fontFamily": "Hack, 'Courier New', monospace"
 }

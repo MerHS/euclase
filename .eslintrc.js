@@ -14,7 +14,6 @@ module.exports = {
   },
   plugins: [
     'html',
-    'flowtype-errors'
   ],
   'rules': {
     'global-require': 0,
@@ -26,7 +25,6 @@ module.exports = {
     'no-multi-assign': 0,
     'no-underscore-dangle': 0,
     'class-methods-use-this': 0,
-    'flowtype-errors/show-errors': 2,
     'no-plusplus': 0,
     'one-var': 0,
     'no-unused-vars': 1,

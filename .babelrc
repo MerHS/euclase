@@ -6,38 +6,36 @@
         ["env", {
           "targets": { "node": 7 }
         }],
-        "stage-0",
-        "flow"
+        "stage-0"
       ],
-      "plugins": ["istanbul"]
+      "plugins": ["istanbul", "transform-class-properties"]
     },
     "main": {
       "presets": [
         ["env", {
           "targets": { "node": 7 }
         }],
-        "stage-0",
-        "flow"
-      ]
+        "stage-0"
+      ],
+      "plugins": ["transform-class-properties"]
     },
     "renderer": {
       "presets": [
         ["env", {
           "modules": false
         }],
-        "stage-0",
-        "flow"
-      ]
+        "stage-0"
+      ],
+      "plugins": ["transform-class-properties"]
     },
     "web": {
       "presets": [
         ["env", {
           "modules": false
         }],
-        "stage-0",
-        "flow"
+        "stage-0"
       ]
     }
   },
-  "plugins": ["transform-runtime"]
+  "plugins": ["transform-runtime", "transform-class-properties"]
 }

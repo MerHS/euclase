@@ -4,14 +4,14 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      dragging: false,
-    };
-  },
-};
+<script lang="ts">
+import Component from 'vue-class-component';
+import Vue from 'vue';
+
+@Component
+export default class NoteWrapper extends Vue {
+  dragging: boolean = false;
+}
 </script>
 
 <style lang="stylus">

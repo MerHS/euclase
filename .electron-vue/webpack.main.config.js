@@ -18,14 +18,11 @@ let mainConfig = {
   module: {
     rules: [
       {
-        test: /\.(js)$/,
-        enforce: 'pre',
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
         exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
-          }
+        options: {
+          appendTsSuffixTo: [/\.vue$/]
         }
       },
       {
@@ -52,7 +49,7 @@ let mainConfig = {
     new webpack.NoEmitOnErrorsPlugin()
   ],
   resolve: {
-    extensions: ['.js', '.json', '.node']
+    extensions: ['.tsx', '.ts', '.js', '.json', '.node']
   },
   target: 'electron-main'
 };

@@ -6,14 +6,17 @@
   </v-container>
 </template>
 
-<script>
-  import EditorLayout from './layout/editor/EditorLayout';
+<script lang="ts">
+  import Vue from 'vue';
+  import Component from 'vue-class-component';
+  import EditorLayout from './layout/editor/EditorLayout.vue';
 
-  export default {
-    components: {
-      EditorLayout,
-    },
-  };
+  @Component({
+    components: { EditorLayout },
+  })
+  export default class MainContainer extends Vue {
+    
+  }
 </script>
 
 <style lang="stylus">

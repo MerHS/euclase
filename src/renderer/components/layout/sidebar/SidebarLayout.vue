@@ -1,20 +1,19 @@
 <template>
   <aside id="sidebar-wrapper">
-    <TestSidebar class="sidebar"></TestSidebar>
   </aside>
 </template>
 
-<script>
-import TestSidebar from './TestSidebar';
+<script lang="ts">
+import Vue from 'vue';
 
-export default {
+export default Vue.extend({
   components: {
-    TestSidebar,
+    
   },
   data() {
     return {};
   },
-};
+});
 </script>
 
 <style lang="stylus">

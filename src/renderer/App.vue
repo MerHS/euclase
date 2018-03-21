@@ -48,33 +48,36 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+  import Vue from 'vue';
+  import Component from 'vue-class-component';
+  
   import MainContainer from './components/MainContainer.vue';
 
-  export default {
+  @Component({
     name: 'euclase-app',
-    components: { MainContainer },
-    data: () => ({
-      saveValid: false,
-      miniVariant: false,
-      rightDrawer: false,
-      title: 'Euclase',
-      mainGrid: 4,
-      subGrid: 16,
-    }),
     watch: {
-      mainGrid(val) {
+      mainGrid(val: number) {
         if (val > 0) {
           this.$store.dispatch('editor/assignPanelState', { mainGrid: val });
         }
       },
-      subGrid(val) {
+      subGrid(val: number) {
         if (val > 0) {
           this.$store.dispatch('editor/assignPanelState', { subGrid: val });
         }
       },
     },
-  };
+    components: { MainContainer }
+  })
+  export default class App extends Vue {
+    saveValid: boolean = false;
+    miniVariant: boolean = false;
+    rightDrawer: boolean = false;
+    title: string = 'Euclase';
+    mainGrid: number = 4;
+    subGrid: number = 16;
+  }
 </script>
 
 <style lang="stylus">

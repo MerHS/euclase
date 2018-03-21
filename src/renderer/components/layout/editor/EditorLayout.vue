@@ -6,23 +6,22 @@
   </div>
 </template>
 
-<script>
-// import { map}
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import TimelineCanvas from './TimelineCanvas.vue';
+import NoteWrapper from './NoteWrapper.vue';
+import TimelineSvg from './TimelineSvg.vue';
 
-import TimelineCanvas from './TimelineCanvas';
-import NoteWrapper from './NoteWrapper';
-import TimelineSvg from './TimelineSvg';
-
-export default {
+@Component({
   components: {
     TimelineCanvas,
     NoteWrapper,
     TimelineSvg,
   },
-  computed: {
-    // TODO: HOW TO DO IT?
-  },
-};
+})
+export default class EditorLayout extends Vue {
+}
 </script>
 
 <style lang="stylus">

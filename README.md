@@ -1,4 +1,4 @@
-# euclase
+# Euclase
 
 > The ONLY BMS Editor
 
