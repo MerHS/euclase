@@ -18,19 +18,19 @@ import { MutationTree, ActionTree, GetterTree, Module } from 'vuex';
  * [measureNo, meterPulseLength, measurePulsePosition]
  */
 export type MeasurePulse = [number, number, number];
-export type MeasureFrac = [number, Fraction, Fraction];
+export type MeasureFraction = [number, Fraction, Fraction];
 export const MP_NO = 0;
 export const MP_LEN = 1;
 export const MP_POS = 2;
 
 export interface ScoreState {
-  metaData: ScoreMetaData,
-  noteManager: NoteManager,
-  soundTypes: { [index: string]: SoundType }, // 'AA'-'ZZ': SoundType
-  noteTypes: { [index: string]: NoteType },
-  eventTypes: { [index: string]: EventType },
-  soundSprites: { [index: string]: SoundSprite },
-  noteFactory: NoteFactory,
+  metaData: ScoreMetaData;
+  noteManager: NoteManager;
+  soundTypes: { [index: string]: SoundType }; // 'AA'-'ZZ': SoundType
+  noteTypes: { [index: string]: NoteType };
+  eventTypes: { [index: string]: EventType };
+  soundSprites: { [index: string]: SoundSprite };
+  noteFactory: NoteFactory;
 }
 
 export const state: () => ScoreState = () => ({
@@ -47,18 +47,17 @@ export const state: () => ScoreState = () => ({
   noteFactory: new NoteFactory(),
 });
 
-
 export interface ScoreGetters {
-  resolution: number,
-  bpm: number,
-  maxMeasureNo: number,
-  maxPulse: number,
-  pulseToTime: (pulse: number) => number,
-  timeToPulse: (time: number) => number,
-  timeSignaturePulseList: Array<MeasurePulse>,
-  measurePulseList: Array<MeasurePulse>,
-  measureFracList: Array<[number, Fraction, Fraction]>,
-  pulseToMeasureNo: (pulse: number) => number,
+  resolution: number;
+  bpm: number;
+  maxMeasureNo: number;
+  maxPulse: number;
+  pulseToTime: (pulse: number) => number;
+  timeToPulse: (time: number) => number;
+  timeSignaturePulseList: Array<MeasurePulse>;
+  measurePulseList: Array<MeasurePulse>;
+  measureFracList: Array<[number, Fraction, Fraction]>;
+  pulseToMeasureNo: (pulse: number) => number;
 };
 
 const getters: GetterTree<ScoreState, RootState> = {
@@ -142,7 +141,7 @@ const getters: GetterTree<ScoreState, RootState> = {
       [no, len.mulInt(resolution).value(), pos.mulInt(resolution).value()] as MeasurePulse);
   },
 
-  measureFracList(state: ScoreState, getters: ScoreGetters): Array<MeasureFrac> {
+  measureFracList(state: ScoreState, getters: ScoreGetters): Array<MeasureFraction> {
     const maxMeasureNo = getters.maxMeasureNo;
     const timeSignatures = state.noteManager.timeSignatures;
     const measureNoList = timeSignatures.map(ts => ts.measureNo);
@@ -157,10 +156,10 @@ const getters: GetterTree<ScoreState, RootState> = {
       noLenTwins,
     );
 
-    const tsFraclist: Array<MeasureFrac> =
-      R.zipWith(([no, len], pos) => [no, len, pos] as MeasureFrac, noFracList, meterFracPosList);
+    const tsFraclist: Array<MeasureFraction> =
+      R.zipWith(([no, len], pos) => [no, len, pos] as MeasureFraction, noFracList, meterFracPosList);
 
-    let lastFrac: MeasureFrac | undefined = R.last(tsFraclist);
+    let lastFrac: MeasureFraction | undefined = R.last(tsFraclist);
     if (!lastFrac) {
       throw new Error('measureFracList returned empty list');
     }
@@ -179,7 +178,7 @@ const getters: GetterTree<ScoreState, RootState> = {
       R.map(
         ([prev, next]) => R.range(prev[MP_NO], next[MP_NO])
           .map(no =>
-            [no, prev[MP_LEN], prev[MP_POS].add(prev[MP_LEN].mulInt(no - prev[MP_NO]))] as MeasureFrac),
+            [no, prev[MP_LEN], prev[MP_POS].add(prev[MP_LEN].mulInt(no - prev[MP_NO]))] as MeasureFraction),
         R.aperture(2, tsFraclist),
       ));
   },
@@ -222,7 +221,6 @@ const mutations: MutationTree<ScoreState> = {
 };
 
 export const score: Module<ScoreState, RootState> = {
-  namespaced: true,
   state,
   getters,
   mutations,

@@ -7,11 +7,11 @@ export type LaneIndex = string;
 export type TrackIndex = string;
 
 export interface ScoreMetaData {
-  title: string,
-  artist: string, // TODO: TO BMSMetaData?
-  fileName?: string,
-  resourcePath?: string,
-  extra: Object,
+  title: string;
+  artist: string; // TODO: TO BMSMetaData?
+  fileName?: string;
+  resourcePath?: string;
+  extra: Object;
 };
 
 // pulse and second should be calculated when to use it.
@@ -30,45 +30,45 @@ export class NoteTime {
 }
 
 export interface NoteLayer {
-  index: TrackIndex,
-  name: string,
-  isLocked: boolean,
-  isVisible: boolean,
-  editableLaneIndex: Array<LaneIndex>, // use all if empty
+  index: TrackIndex;
+  name: string;
+  isLocked: boolean;
+  isVisible: boolean;
+  editableLaneIndex: Array<LaneIndex>; // use all if empty
 };
 
 export interface TimeSignature {
-  measureNo: number,
-  meter: Beat,
+  measureNo: number;
+  meter: Beat;
 };
 
 export interface NoteType {
-  index: string,
-  typeName: string,
-  BMSChannel?: number
+  index: string;
+  typeName: string;
+  BMSChannel?: number;
 };
 
 export interface EventType {
-  index: string,
-  BMSChannel?: number,
+  index: string;
+  BMSChannel?: number;
 };
 
 export interface MIDIValue {
-  length: number, // second scale
-  intensity: number, // normalized to 0-1
-  pitch: number, // midi scale
+  length: number; // second scale
+  intensity: number; // normalized to 0-1
+  pitch: number; // midi scale
 };
 
 export interface SoundSprite {
-  fileName: string,
-  useWhole: boolean, // default true
-  interval?: [number, number], // second scale
+  fileName: string;
+  useWhole: boolean; // default true
+  interval?: [number, number]; // second scale
 }
 
 export interface SoundType {
-  index: SoundIndex,
-  midiValue?: MIDIValue,
-  soundSpriteIndex?: string,
+  index: SoundIndex;
+  midiValue?: MIDIValue;
+  soundSpriteIndex?: string;
 };
 
 // export interface LaneType {

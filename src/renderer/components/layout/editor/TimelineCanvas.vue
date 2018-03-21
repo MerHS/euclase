@@ -13,7 +13,7 @@
   @Component({
     computed: {
       ...mapState('editor', ['isPanelDirty']),
-      ...mapState('editor/themes', ['currentTheme']),
+      ...mapState('editor/theme', ['currentTheme']),
       ...mapState('editor/score', ['noteManager']),
       ...mapGetters('score', ['measurePulseList']),
       ...mapGetters('editor', [

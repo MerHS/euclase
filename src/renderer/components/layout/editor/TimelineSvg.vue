@@ -20,7 +20,7 @@
   export default class TimelineSVG extends Vue {
     @State('noteManager', { namespace: 'editor/score' }) noteManager: any;
     // computed: {
-    //   ...mapState('editor/themes', {
+    //   ...mapState('editor/theme', {
     //     gridColors: state => state.currentTheme.gridColors,
     //     laneStyles: state => state.currentTheme.laneStyles,
     //   }),

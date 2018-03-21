@@ -10,12 +10,12 @@ import { RootState } from '../..';
 
 
 export interface NoteState {
-  noteHeight: number,
-  hiddenNoteOpacity: number,
-  borderColor: ColorString,
-  borderColorOnMouseOver: ColorString,
-  borderColorOnSelection: ColorString,
-  borderColorOnMouseOverLN: ColorString,
+  noteHeight: number;
+  hiddenNoteOpacity: number;
+  borderColor: ColorString;
+  borderColorOnMouseOver: ColorString;
+  borderColorOnSelection: ColorString;
+  borderColorOnMouseOverLN: ColorString;
 };
 
 const state: NoteState = {
@@ -27,7 +27,6 @@ const state: NoteState = {
   borderColorOnMouseOverLN: cyan,
 };
 
-export const notes: Module<NoteState, RootState> = {
-  namespaced: true,
+export const note: Module<NoteState, RootState> = {
   state,
 };

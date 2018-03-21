@@ -1,5 +1,5 @@
 /**  
- * editor/timeline - style settings of timeline
+ * editor/theme - style settings of timeline
  * This state should be able to import and export.
  */
 import R from 'ramda';
@@ -19,6 +19,12 @@ export const state: ThemeState = {
   usePreset: true,
 };
 
+export interface ThemeGetters {
+  currGridColors: GridColors,
+  currLaneStyles: LaneStyles,
+  totalWidth: number,
+};
+
 export const getters: GetterTree<ThemeState, RootState> = {
   currGridColors(state: ThemeState): GridColors {
     return state.currentTheme.gridColors;
@@ -31,8 +37,7 @@ export const getters: GetterTree<ThemeState, RootState> = {
   },
 };
 
-export const themes: Module<ThemeState, RootState> = {
-  namespaced: true,
+export const theme: Module<ThemeState, RootState> = {
   state,
   getters,
 };

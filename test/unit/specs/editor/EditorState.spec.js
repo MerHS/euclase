@@ -7,8 +7,8 @@ describe('editor/index.js', function () {
   // const
   //   style1 = R.merge(defaultLaneStyle, { width: 30 }),
   //   style2 = R.merge(defaultLaneStyle, { width: 60 }),
-  //   themes = { currStyle: { laneStyles: [style1, style2] } },
-  //   editorState = { themes };
+  //   theme = { currStyle: { laneStyles: [style1, style2] } },
+  //   editorState = { theme };
   //
   // it('canvasInfo', function () {
   //   const canvasInfo = getters.canvasInfo(editorState);

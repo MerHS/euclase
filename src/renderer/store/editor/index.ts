@@ -1,37 +1,37 @@
 /* eslint-disable no-unused-vars */
 
 import { Coord, NoteIndex, Rect, EditMode } from '../../utils/scoreTypes';
-import { MP_LEN, MP_POS } from './score';
+import { MP_LEN, MP_POS, ScoreGetters, MeasureFraction } from './score';
 import { binarySearch, mergeSortedList } from '../../utils/noteUtil';
 import Fraction from '../../utils/fraction';
 import { RootState } from '..';
 
-import { themes, ThemeState } from './themes';
+import { theme, ThemeState, ThemeGetters } from './theme';
 import { panel, PanelState, PANEL_DIRTY_PROPS  } from './panel';
-import { notes, NoteState } from './notes';
+import { note, NoteState } from './note';
 import { score, MeasurePulse, ScoreState } from './score';
 import * as R from 'ramda';
 import { MutationTree, ActionTree, GetterTree, Module } from 'vuex';
 
 export interface DragZoneState {
-  isDragging: boolean,
-  isExclusive: boolean, // ctrl + drag
-  dragRect: Rect,
+  isDragging: boolean;
+  isExclusive: boolean; // ctrl + drag
+  dragRect: Rect;
 }
 
 export interface EditorState {
-  isPanelDirty: boolean,
-  editMode: EditMode,
-  dragZone: DragZoneState,
-  selectedNotes: Array<NoteIndex>,
+  isPanelDirty: boolean;
+  editMode: EditMode;
+  dragZone: DragZoneState;
+  selectedNotes: Array<NoteIndex>;
 };
 
-// type EditorState = EditorRootState & {
-//   themes: ThemeState,
-//   panel: PanelState,
-//   notes: NoteState,
-//   score: ScoreState,
-// };
+interface EditorGetterState extends EditorState {
+  theme: ThemeState;
+  panel: PanelState;
+  notes: NoteState;
+  score: ScoreState;
+};
 
 export const state: EditorState = {
   isPanelDirty: false,
@@ -45,19 +45,22 @@ export const state: EditorState = {
 };
 
 export interface CanvasInfo {
-  widthPixel: number,
-  heightPixel: number,
-  laneXList: Array<number>,
-  laneEditableList: Array<boolean>,
-  editGroupList: Array<number>,
-  panelYList: Array<number>,
-  mainGridYList: Array<number>,
-  subGridYList: Array<number>,
-  gridYList: Array<number>,
+  widthPixel: number;
+  heightPixel: number;
+  laneXList: Array<number>;
+  laneEditableList: Array<boolean>;
+  editGroupList: Array<number>;
+  panelYList: Array<number>;
+  mainGridYList: Array<number>;
+  subGridYList: Array<number>;
+  gridYList: Array<number>;
 };
 
-export type EditorGetters = CanvasInfo & {
-  canvasInfo: CanvasInfo,
+export interface EditorGetters extends CanvasInfo, ScoreGetters, ThemeGetters {
+  yPixelToGridPulse: (yPixel: number) => number;
+  yPixelToPulse: (yPixel: number) => number;
+  pulseToYPixel: (pulse: number) => number;
+  canvasInfo: CanvasInfo;
 };
 
 /*
@@ -67,8 +70,9 @@ depends on: noteHeight / laneX / laneGroup / timeSignatures / notes
  */
 
 export const getters: GetterTree<EditorState, RootState> = {
-  laneXList(state: EditorState): CanvasInfo['laneXList'] {
-    const laneStyles = state.themes.currentTheme.laneStyles;
+  laneXList(_state: EditorState): CanvasInfo['laneXList'] {
+    const state = _state as EditorGetterState;
+    const laneStyles = state.theme.currentTheme.laneStyles;
     return R.scan((sum, style) => sum + style.width, 0, laneStyles);
   },
   laneEditableList(state: EditorState, getters: Object): CanvasInfo['laneEditableList'] {
@@ -77,38 +81,43 @@ export const getters: GetterTree<EditorState, RootState> = {
   editGroupList(state: EditorState): CanvasInfo['editGroupList'] {
     return [];
   },
-  panelYList(state: EditorState, getters: Object): CanvasInfo['panelYList'] {
+  panelYList(
+    state: EditorState, getters: EditorGetters,
+  ): CanvasInfo['panelYList'] {
     const
-      measurePulseList: Array<MeasurePulse> = getters['score/measurePulseList'],
+      measurePulseList: Array<MeasurePulse> = getters.measurePulseList,
       pulseToYPixel: (pulse: number) => number = getters.pulseToYPixel;
 
     return measurePulseList.map(pulse => pulseToYPixel(pulse[MP_POS]));
   },
-  mainGridYList(state: EditorState, getters: Object): CanvasInfo['mainGridYList'] {
+  mainGridYList(_state: EditorState, getters: EditorGetters): CanvasInfo['mainGridYList'] {
+    const state = _state as EditorGetterState;
     const
       mainFrac = new Fraction(1, state.panel.mainGrid),
-      resolution: number = getters['score/resolution'],
-      measureFracList: Array<[number, Fraction, Fraction]> = getters['score/measureFracList'],
+      resolution: number = getters.resolution,
+      measureFracList: Array<MeasureFraction> = getters.measureFracList,
       pulseToYPixel: (pulse: number) => number = getters.pulseToYPixel;
-
-    return R.flatten(measureFracList.map(([no, len, pos]) => {
+    
+    // R.chain === _.flatMap
+    return R.chain(([no, len, pos]) => {
       const gridCount = len.div(mainFrac).floorValue();
       return R.range(1, gridCount).map(n => pos.add(mainFrac.mulInt(n)));
-    })).map(
+    }, measureFracList).map(
       (frac: Fraction) => pulseToYPixel(frac.mulInt(resolution).value()),
     );
   },
-  subGridYList(state: EditorState, getters: Object): CanvasInfo['subGridYList'] {
+  subGridYList(_state: EditorState, getters: EditorGetters): CanvasInfo['subGridYList'] {
+    const state = _state as EditorGetterState;
     const
       subFrac = new Fraction(1, state.panel.subGrid),
-      resolution: number = getters['score/resolution'],
-      measureFracList: Array<[number, Fraction, Fraction]> = getters['score/measureFracList'],
+      resolution: number = getters.resolution,
+      measureFracList: Array<MeasureFraction> = getters.measureFracList,
       pulseToYPixel: (pulse: number) => number = getters.pulseToYPixel;
 
-    return R.flatten(measureFracList.map(([no, len, pos]) => {
+    return R.chain(([no, len, pos]) => {
       const gridCount = len.div(subFrac).floorValue();
       return R.range(1, gridCount).map(n => pos.add(subFrac.mulInt(n)));
-    })).map(
+    }, measureFracList).map(
       (frac: Fraction) => pulseToYPixel(frac.mulInt(resolution).value()),
     );
   },
@@ -118,17 +127,19 @@ export const getters: GetterTree<EditorState, RootState> = {
 
     return mergeSortedList(mainGridYList, subGridYList, (a, b) => a < b);
   },
-  widthPixel(state: EditorState, getters: Object): CanvasInfo['widthPixel'] {
+  widthPixel(_state: EditorState, getters: EditorGetters): CanvasInfo['widthPixel'] {
+    const state = _state as EditorGetterState;
     const
-      totalWidth: number = getters['themes/totalWidth'],
+      totalWidth: number = getters.totalWidth,
       verticalZoom = state.panel.verticalZoom;
 
     return totalWidth * verticalZoom;
   },
-  heightPixel(state: EditorState, getters: Object): CanvasInfo['heightPixel'] {
+  heightPixel(_state: EditorState, getters: EditorGetters): CanvasInfo['heightPixel'] {
+    const state = _state as EditorGetterState;
     const
-      resolution: number = getters['score/resolution'],
-      maxPulse: number = getters['score/maxPulse'],
+      resolution: number = getters.resolution,
+      maxPulse: number = getters.maxPulse,
       defaultHeight = state.panel.defaultHeight,
       horizontalZoom = state.panel.horizontalZoom;
 
@@ -150,16 +161,16 @@ export const getters: GetterTree<EditorState, RootState> = {
       heightPixel,
     };
   },
-  yPixelToPulse(state: EditorState, getters: Object): (yPixel: number) => number {
+  yPixelToPulse(state: EditorState, getters: EditorGetters): (yPixel: number) => number {
     const
-      maxPulse: number = getters['score/maxPulse'],
+      maxPulse: number = getters.maxPulse,
       heightPixel = getters.heightPixel;
 
     return (yPixel: number) => maxPulse * (yPixel / heightPixel);
   },
-  pulseToYPixel(state: EditorState, getters: Object): (pulse: number) => number {
+  pulseToYPixel(state: EditorState, getters: EditorGetters): (pulse: number) => number {
     const
-      maxPulse: number = getters['score/maxPulse'],
+      maxPulse: number = getters.maxPulse,
       heightPixel = getters.heightPixel;
 
     return (pulse: number) => heightPixel * (pulse / maxPulse);
@@ -168,7 +179,7 @@ export const getters: GetterTree<EditorState, RootState> = {
     // TODO: Draw By Layers
     return [];
   },
-  yPixelToGridPulse(state: EditorState, getters: Object): (yPixel: number) => number {
+  yPixelToGridPulse(state: EditorState, getters: EditorGetters): (yPixel: number) => number {
     const
       gridYList = getters.gridYList,
       yPixelToPulse = getters.yPixelToPulse;
@@ -238,9 +249,9 @@ export const editor: Module<EditorState, RootState> = {
   mutations,
   actions,
   modules: {
-    themes,
+    theme,
     panel,
-    notes,
+    note,
     score,
   },
 };

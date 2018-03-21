@@ -38,7 +38,6 @@ const mutations: MutationTree<PanelState> = {
 };
 
 export const panel: Module<PanelState, RootState> = {
-  namespaced: true,
   state,
   mutations,
 };

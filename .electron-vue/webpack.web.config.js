@@ -19,11 +19,17 @@ let webConfig = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'ts-loader',
+        loader: 'awesome-typescript-loader',
         exclude: /node_modules/,
         options: {
           appendTsSuffixTo: [/\.vue$/]
         }
+      },
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        loader: 'source-map-loader',
+        exclude: /node_modules/
       },
       {
         test: /\.css$/,
@@ -82,6 +88,7 @@ let webConfig = {
       }
     ]
   },
+  devtool: 'source-map',
   plugins: [
     new ExtractTextPlugin('styles.css'),
     new HtmlWebpackPlugin({
