@@ -14,7 +14,7 @@ export interface PanelState {
   verticalZoom: number,
   horizontalZoom: number,
   defaultHeight: number,
-};
+}
 
 const state: PanelState = {
   panelCount: 5,

@@ -266,34 +266,8 @@ export class NoteManager {
   }
 
   _addNoteIndex(noteIndex: NoteIndex): void {
-    // if (noteIndex.length === 0) {
-    //   throw Error(`addNoteIndex FAILED:
-    //     noteIndex: ${noteIndex}`);
-    // }
-    //
-    // if (noteIndex.startsWith('m')) {
-    //   this.musicNoteIndices = this.musicNoteIndices.add(noteIndex);
-    // } else if (noteIndex.startsWith('e')) {
-    //   this.eventNoteIndices = this.eventNoteIndices.add(noteIndex);
-    // } else {
-    //   throw Error(`addNoteIndex Failed: not compatible NoteIndex type
-    //     noteIndex: ${noteIndex}`);
-    // }
   }
 
   _deleteNoteIndex(noteIndex: NoteIndex): void {
-    // if (noteIndex.length === 0) {
-    //   throw Error(`deleteNoteIndex FAILED:
-    //     noteIndex: ${noteIndex}`);
-    // }
-    //
-    // if (noteIndex.startsWith('m')) {
-    //   this.musicNoteIndices = this.musicNoteIndices.delete(noteIndex);
-    // } else if (noteIndex.startsWith('e')) {
-    //   this.eventNoteIndices = this.eventNoteIndices.delete(noteIndex);
-    // } else {
-    //   throw Error(`deleteNoteIndex Failed: not compatible NoteIndex type
-    //     noteIndex: ${noteIndex}`);
-    // }
   }
 }

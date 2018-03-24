@@ -13,7 +13,6 @@ import TimelineCanvas from './TimelineCanvas.vue';
 import NoteWrapper from './NoteWrapper.vue';
 import TimelineSvg from './TimelineSvg.vue';
 
-
 export default Vue.extend({
   components: {
     TimelineCanvas,

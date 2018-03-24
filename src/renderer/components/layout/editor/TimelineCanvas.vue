@@ -9,8 +9,8 @@
 
   import { mapGetters, mapState } from 'vuex';
   import CanvasUtil from '../../../utils/canvasUtil';
-  import { LaneTheme } from 'src/renderer/utils/themeTypes';
-  import { CanvasInfo } from 'src/renderer/store/editor';
+  import { LaneTheme } from '../../../utils/themeTypes';
+  import { CanvasInfo } from '../../../store/editor';
  
   export default Vue.extend({
     name: 'back-canvas',
@@ -27,15 +27,14 @@
         return this.$store.getters['editor/canvasInfo'];
       },
       ...mapState('editor', ['isPanelDirty']),
-      ...mapGetters('editor', ['measurePulseList']),
       ...mapGetters('editor', [
         'widthPixel', 'heightPixel',
       ]),
     },
     watch: {
-      isPanelDirty(val, oldVal) {
-        if (val === true) {
-          //this.renderCanvas();
+      isPanelDirty(newVal) {
+        if (newVal === true) {
+          this.renderCanvas();
           this.$store.commit('editor/setPanelDirty', false);
         }
       },

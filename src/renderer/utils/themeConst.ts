@@ -32,7 +32,7 @@ export const defaultGridColor: GridColors = {
   verticalLineColor: colorStr(110, 110, 110),
   sectionBorderColor: colorStr(110, 110, 110),
   mainGridColor: colorStr(58, 58, 58, 200),
-  subGridColor: colorStr(58, 58, 58, 155),
+  subGridColor: colorStr(58, 58, 58, 125),
   captionColor: green,
   sectionNumberColor: cyan,
 };

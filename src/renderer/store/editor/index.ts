@@ -24,14 +24,14 @@ export interface EditorState {
   editMode: EditMode;
   dragZone: DragZoneState;
   selectedNotes: Array<NoteIndex>;
-};
+}
 
 interface EditorGetterState extends EditorState {
   theme: ThemeState;
   panel: PanelState;
   notes: NoteState;
   score: ScoreState;
-};
+}
 
 export const state: EditorState = {
   isPanelDirty: false,
@@ -54,14 +54,14 @@ export interface CanvasInfo {
   mainGridYList: Array<number>;
   subGridYList: Array<number>;
   gridYList: Array<number>;
-};
+}
 
 export interface EditorGetters extends CanvasInfo, ScoreGetters, ThemeGetters {
   yPixelToGridPulse: (yPixel: number) => number;
   yPixelToPulse: (yPixel: number) => number;
   pulseToYPixel: (pulse: number) => number;
   canvasInfo: CanvasInfo;
-};
+}
 
 /*
 type NoteRenderInfo
@@ -219,12 +219,12 @@ type EditorActions = {
   dispatch: Function,
 };
 
-function _assignState<T extends Object>(
-  commit: Function, mutationPath: string, payload: Partial<T>, dirtyProps: Array<keyof T>,
+function assignStateAndSetDirty(
+  commit: Function, mutationPath: string, payload: Partial<PanelState>,
 ) {
   commit(mutationPath, payload);
-  for (let i = 0; i < dirtyProps.length; i++) {
-    const panelProp = dirtyProps[i];
+  for (let i = 0; i < PANEL_DIRTY_PROPS.length; i++) {
+    const panelProp = PANEL_DIRTY_PROPS[i];
     if (panelProp in payload) {
       commit('setPanelDirty', true);
       break;
@@ -234,10 +234,10 @@ function _assignState<T extends Object>(
 
 const actions: ActionTree<EditorState, RootState> = {
   addNote({ state, getters, commit }: EditorActions, coord: Coord) {
-    // TODO:
+    
   },
   assignPanelState({ state, commit }: EditorActions, payload: Partial<PanelState>) {
-    _assignState(commit, 'panel/assignState', payload, PANEL_DIRTY_PROPS);
+    assignStateAndSetDirty(commit, 'assignState', payload);
   },
 };
 

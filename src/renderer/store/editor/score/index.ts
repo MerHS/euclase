@@ -58,7 +58,7 @@ export interface ScoreGetters {
   measurePulseList: Array<MeasurePulse>;
   measureFracList: Array<[number, Fraction, Fraction]>;
   pulseToMeasureNo: (pulse: number) => number;
-};
+}
 
 const getters: GetterTree<ScoreState, RootState> = {
   resolution(state: ScoreState): number {

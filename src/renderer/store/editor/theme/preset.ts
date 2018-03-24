@@ -1,4 +1,3 @@
-//  
 import { LaneStylePreset, LaneStyleSettings, LaneTheme, LaneStyleSettingPart } from '../../../utils/themeTypes';
 import { colorStr, transparent, cyan, red, defaultLaneStyle } from '../../../utils/themeConst';
 import { laneStateListToTheme } from './mapper';

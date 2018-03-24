@@ -16,7 +16,7 @@ export interface NoteState {
   borderColorOnMouseOver: ColorString;
   borderColorOnSelection: ColorString;
   borderColorOnMouseOverLN: ColorString;
-};
+}
 
 const state: NoteState = {
   noteHeight: 10,

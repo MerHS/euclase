@@ -12,7 +12,7 @@ import { RootState } from '../..';
 export interface ThemeState {
   currentTheme: LaneTheme,
   usePreset: boolean
-};
+}
 
 export const state: ThemeState = {
   currentTheme: themePresets.defaultTheme,
@@ -23,7 +23,7 @@ export interface ThemeGetters {
   currGridColors: GridColors,
   currLaneStyles: LaneStyles,
   totalWidth: number,
-};
+}
 
 export const getters: GetterTree<ThemeState, RootState> = {
   currGridColors(state: ThemeState): GridColors {

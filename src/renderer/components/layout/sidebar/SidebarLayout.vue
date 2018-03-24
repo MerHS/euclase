@@ -1,12 +1,35 @@
 <template>
-  <aside id="sidebar-wrapper">
-  </aside>
+  <v-navigation-drawer
+      clipped
+      fixed
+      right
+      v-model="rightDrawer"
+      :width="200"
+      app
+      class="pa-3"
+  >
+    <v-flex xs9>
+      <v-slider label="Main Grid" :max="32" v-model="mainGrid"></v-slider>
+    </v-flex>
+    <v-flex xs3>
+      <v-text-field v-model="mainGrid" type="number"></v-text-field>
+    </v-flex>
+    <v-flex xs9>
+      <v-slider label="Sub Grid" :max="64" v-model="subGrid"></v-slider>
+    </v-flex>
+    <v-flex xs3>
+      <v-text-field v-model="subGrid" type="number"></v-text-field>
+    </v-flex>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 
 export default Vue.extend({
+    props: {
+
+    },
   components: {
     
   },
