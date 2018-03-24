@@ -1,40 +1,54 @@
 <template>
-  <v-navigation-drawer
-      clipped
-      fixed
-      right
-      v-model="rightDrawer"
-      :width="200"
-      app
-      class="pa-3"
-  >
-    <v-flex xs9>
-      <v-slider label="Main Grid" :max="32" v-model="mainGrid"></v-slider>
-    </v-flex>
-    <v-flex xs3>
-      <v-text-field v-model="mainGrid" type="number"></v-text-field>
-    </v-flex>
-    <v-flex xs9>
-      <v-slider label="Sub Grid" :max="64" v-model="subGrid"></v-slider>
-    </v-flex>
-    <v-flex xs3>
-      <v-text-field v-model="subGrid" type="number"></v-text-field>
-    </v-flex>
-  </v-navigation-drawer>
+  <v-container fluid grid-list-sm>
+    <v-layout row wrap>
+      <v-flex xs6>
+        <v-text-field label="Main Grid" :rules="[gridValueValidator]"
+          type="number" v-model="mainGrid" required></v-text-field>
+      </v-flex>
+      <v-flex xs6>
+        <v-text-field label="Sub Grid" :rules="[gridValueValidator]"
+          type="number" v-model="subGrid" required></v-text-field>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapActions } from 'vuex';
 
 export default Vue.extend({
-    props: {
-
-    },
-  components: {
-    
-  },
   data() {
-    return {};
+    return {
+      mainGrid: 4,
+      subGrid: 16,
+    };
+  },
+  methods: {
+    gridValueValidator(value: number): boolean | string {
+      value = +value;
+      if ((value <= 0) || (value != Math.floor(value))) {
+        return 'must be positive integer';
+      }
+      return true;
+    },
+    assignPanelState(payload: any) {
+      this.$store.dispatch('editor/assignPanelState', payload);
+    }
+  },
+  watch: {
+    mainGrid(val: number) {
+      if (val > 0) {
+        val = Math.floor(val);
+        this.assignPanelState({ mainGrid: val });
+      }
+    },
+    subGrid(val: number) {
+      if (val > 0) {
+        val = Math.floor(val);
+        this.assignPanelState({ subGrid: val });
+      }
+    },
   },
 });
 </script>

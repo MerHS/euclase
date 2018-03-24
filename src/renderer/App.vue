@@ -9,20 +9,9 @@
         right
         v-model="rightDrawer"
         app
-        class="pa-3"
+        class="pa-2"
       >
-        <v-container fluid grid-list-sm>
-          <v-layout row wrap>
-            <v-flex xs6>
-              <v-text-field label="Main Grid" :rules="[gridValueValidator]"
-                type="number" v-model="mainGrid" required></v-text-field>
-            </v-flex>
-            <v-flex xs6>
-              <v-text-field label="Sub Grid" :rules="[gridValueValidator]"
-                type="number" v-model="subGrid" required></v-text-field>
-            </v-flex>
-          </v-layout>
-        </v-container>
+        <sidebar-layout/>
       </v-navigation-drawer>
 
       <v-toolbar fixed app clipped-right>
@@ -50,51 +39,24 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
-  import { mapActions } from 'vuex';
-  import MainContainer from './components/MainContainer.vue';
+import Vue from 'vue';
 
-  export default Vue.extend({
-    components: { MainContainer },
-    name: 'euclase-app',
-    watch: {
-      mainGrid(val: number) {
-        if (val > 0) {
-          val = Math.floor(val);
-          this.assignPanelState({ mainGrid: val });
-        }
-      },
-      subGrid(val: number) {
-        if (val > 0) {
-          val = Math.floor(val);
-          this.assignPanelState({ subGrid: val });
-        }
-      },
-    },
-    methods: {
-      assignPanelState(payload: any) {
-        this.$store.dispatch('editor/assignPanelState', payload);
-      },
-      gridValueValidator(value: number): boolean | string {
-        value = +value;
-        if ((value <= 0) || (value != Math.floor(value))) {
-          return 'must be positive integer'
-        }
-        return true;
-      },
-    },
-    data() {
-      return {
-        saveValid: false,
-        miniVariant: false,
-        rightDrawer: false,
-        title: 'Euclase',
-        mainGrid: 4,
-        subGrid: 16,
-      }
+import MainContainer from './components/MainContainer.vue';
+import SidebarLayout from './components/layout/sidebar/SidebarLayout.vue';
+
+export default Vue.extend({
+  components: { MainContainer, SidebarLayout },
+  name: 'euclase-app',
+  data() {
+    return {
+      saveValid: false,
+      miniVariant: false,
+      rightDrawer: false,
+      title: 'Euclase',
     }
-    
-  });
+  }
+  
+});
 </script>
 
 <style lang="stylus">

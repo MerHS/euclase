@@ -1,13 +1,14 @@
 <template>
   <div id="editor-workspace">
-    <timeline-canvas/>
+    <timeline-canvas :width="widthPixel" :height="heightPixel"/>
     <!--<timeline-svg/>-->
-    <note-wrapper/>
+    <note-wrapper :width="widthPixel" :height="heightPixel"/>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
 
 import TimelineCanvas from './TimelineCanvas.vue';
 import NoteWrapper from './NoteWrapper.vue';
@@ -18,6 +19,9 @@ export default Vue.extend({
     TimelineCanvas,
     NoteWrapper,
     TimelineSvg,
+  },
+  computed: {
+    ...mapGetters('editor', ['widthPixel', 'heightPixel']),
   },
 });
 </script>

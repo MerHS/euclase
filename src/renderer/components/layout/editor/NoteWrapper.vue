@@ -1,5 +1,5 @@
 <template>
-  <div id="note-wrapper" tabindex="-1">
+  <div id="note-wrapper" tabindex="-1" :style="wrapperStyle">
     <div id="selected-range" v-show="dragging"></div>
   </div>
 </template>
@@ -8,11 +8,23 @@
 import Vue from 'vue';
 
 export default Vue.extend({
+  props: {
+    width: Number,
+    height: Number,
+  },
   data() {
     return {
       dragging: false,
     };
   },
+  computed: {
+    wrapperStyle(): Object {
+      return {
+        width: `${this.width}px`,
+        height: `${this.height}px`,
+      }
+    },
+  }
 });
 </script>
 
