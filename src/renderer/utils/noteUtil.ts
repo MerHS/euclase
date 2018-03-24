@@ -96,35 +96,18 @@ export class NoteFactory {
     this.nextIndex += 1;
     return index;
   }
-
-  // makeNote(props: PlayNoteProps, pos: NoteTime): PlayNote {
-  //   const index = this.getNextIndex(props);
-  //   const factoryValue: Object = { index, props, pos };
-  //   let newNote: PlayNote;
-  //
-  //   if (props instanceof MusicNoteProps) {
-  //     newNote = this.musicNoteFactory(factoryValue);
-  //   } else if (props instanceof EventNoteProps) {
-  //     newNote = this.eventNoteFactory(factoryValue);
-  //   } else {
-  //     throw Error(`NoteFactory getNote Failed: not compatible note type
-  //       noteProps ${JSON.stringify(props)}`);
-  //   }
-  //
-  //   return newNote;
-  // }
 }
 
 export class NoteManager {
   bpm: number;
   resolution: number;
   allNotes: { [index: string]: Note };
-  playNoteList: Array<PlayNote>; // sorted by pulse
-  bpmNoteList: Array<BPMNote>; // sorted by pulse
-  stopNoteList: Array<StopNote>; // sorted by pulse
+  playNoteList: PlayNote[]; // sorted by pulse
+  bpmNoteList: BPMNote[]; // sorted by pulse
+  stopNoteList: StopNote[]; // sorted by pulse
   dirtyNotes: Set<NoteIndex>;
   dirtyPulse: number;
-  timeSignatures: Array<TimeSignature>; // sorted by measureNo
+  timeSignatures: TimeSignature[]; // sorted by measureNo
 
   constructor(bpm: number, resolution: number) {
     this.bpm = bpm;
@@ -138,9 +121,6 @@ export class NoteManager {
     this.timeSignatures = [{
       measureNo: 0,
       meter: [4, 4],
-    }, {
-      measureNo: 3,
-      meter: [3, 4], // TODO: temporary!
     }];
   }
 
@@ -172,7 +152,6 @@ export class NoteManager {
   }
 
   getLastNote(): Note | undefined {
-    // TODO
     const lastPlayNote = _.last(this.playNoteList);
     const lastBPMNote = _.last(this.bpmNoteList);
     const lastStopNote = _.last(this.stopNoteList);
@@ -199,11 +178,9 @@ export class NoteManager {
     this._resolveDirty();
   }
 
-  setNoteList(noteList: Array<Note>): void {
+  setNoteList(noteList: Note[]): void {
     // TODO: implement this
   }
-
-  // TODO: setScoreNote
 
   deleteNote(noteIndex: NoteIndex): void {
     const note: Note | undefined = this.allNotes[noteIndex];

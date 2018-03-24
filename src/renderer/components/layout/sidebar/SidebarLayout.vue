@@ -1,6 +1,9 @@
 <template>
   <v-container fluid grid-list-sm>
     <v-layout row wrap>
+      <v-flex xs12>
+        <v-text-field label="title" v-model="title" required></v-text-field>
+      </v-flex>
       <v-flex xs6>
         <v-text-field label="Main Grid" :rules="[gridValueValidator]"
           type="number" v-model="mainGrid" required></v-text-field>
@@ -20,6 +23,7 @@ import { mapActions } from 'vuex';
 export default Vue.extend({
   data() {
     return {
+      title: '',
       mainGrid: 4,
       subGrid: 16,
     };
@@ -49,6 +53,9 @@ export default Vue.extend({
         this.assignPanelState({ subGrid: val });
       }
     },
+    title(val: string) {
+      
+    }
   },
 });
 </script>

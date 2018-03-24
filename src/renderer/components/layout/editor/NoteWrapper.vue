@@ -1,30 +1,51 @@
 <template>
   <div id="note-wrapper" tabindex="-1" :style="wrapperStyle">
-    <div id="selected-range" v-show="dragging"></div>
+    <div id="drag-zone" v-show="dragZone.isDragging"></div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapState } from 'vuex';
 
 export default Vue.extend({
   props: {
     width: Number,
     height: Number,
   },
-  data() {
-    return {
-      dragging: false,
-    };
-  },
   computed: {
     wrapperStyle(): Object {
       return {
         width: `${this.width}px`,
         height: `${this.height}px`,
-      }
+      };
     },
-  }
+    dragZoneStyle(): Object {
+      return {};
+    },
+    ...mapState('editor', ['editMode', 'dragZone']),
+  },
+  methods: {
+    mouseDown(e: MouseEvent) {
+
+    },
+    mouseMove(e: MouseEvent) {
+      
+    },
+    mouseUp(e: MouseEvent) {
+      
+    },
+  },
+  mounted() {
+    this.$el.addEventListener('mousedown', this.mouseDown);
+    document.addEventListener('mousemove', this.mouseMove);
+    document.addEventListener('mouseup', this.mouseUp);
+  },
+  beforeDestroy() {
+    this.$el.removeEventListener('mousedown', this.mouseDown);
+    document.removeEventListener('mousemove', this.mouseMove);
+    document.removeEventListener('mouseup', this.mouseUp);
+  },
 });
 </script>
 
@@ -52,7 +73,7 @@ export default Vue.extend({
   &.selected &:hover
     border-color: red
   
-#selected-range
+#drag-zone
   position: absolute
   border: 1px solid green
   

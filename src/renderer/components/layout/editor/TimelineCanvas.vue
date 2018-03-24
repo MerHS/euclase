@@ -33,11 +33,17 @@ export default Vue.extend({
     ...mapState('editor', ['isPanelDirty']),
   },
   watch: {
-    isPanelDirty(newVal) {
-      if (newVal === true) {
-        this.renderCanvas();
-        this.$store.commit('editor/setPanelDirty', false);
-      }
+    // isPanelDirty(newVal) {
+    //   if (newVal === true) {
+    //     this.renderCanvas();
+    //     this.$store.commit('editor/setPanelDirty', false);
+    //   }
+    // },
+    canvasInfo(newVal) {
+      this.renderCanvas();
+    },
+    currentTheme(newVal) {
+      this.renderCanvas();
     },
   },
   methods: {

@@ -50,10 +50,10 @@ export interface CanvasInfo {
   laneXList: Array<number>;
   laneEditableList: Array<boolean>;
   editGroupList: Array<number>;
-  panelYList: Array<number>;
-  mainGridYList: Array<number>;
-  subGridYList: Array<number>;
-  gridYList: Array<number>;
+  panelYList: Array<number>; // TODO: array to calculation function
+  mainGridYList: Array<number>; // TODO: array to calculation function
+  subGridYList: Array<number>; // TODO: array to calculation function
+  gridYList: Array<number>; // TODO: array to calculation function
 }
 
 export interface EditorGetters extends CanvasInfo, ScoreGetters, ThemeGetters {
@@ -197,16 +197,16 @@ const mutations: MutationTree<EditorState> = {
   setPanelDirty(state: EditorState, isPanelDirty: boolean) {
     state.isPanelDirty = isPanelDirty;
   },
-  DRAGZONE_START(state: EditorState, option: any) {
+  dragStart(state: EditorState, option: any) {
 
   },
-  DRAGZONE_MOVE(state: EditorState) {
+  dragMove(state: EditorState) {
 
   },
-  DRAGZONE_END(state: EditorState) {
+  dragEnd(state: EditorState) {
 
   },
-  CHANGE_MODE(state: EditorState, mode: EditMode) {
+  changeMode(state: EditorState, mode: EditMode) {
     state.editMode = mode;
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-app dark>
+    <v-app>
       <v-navigation-drawer
         clipped
         fixed
@@ -9,12 +9,13 @@
         right
         v-model="rightDrawer"
         app
-        class="pa-2"
+        class="pa-2 blue-grey lighten-5"
+        :width="240"
       >
         <sidebar-layout/>
       </v-navigation-drawer>
 
-      <v-toolbar fixed app clipped-right>
+      <v-toolbar fixed app clipped-right dark class="primary">
         <v-toolbar-title v-text="title"></v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn
@@ -29,7 +30,7 @@
         <main-container></main-container>
       </v-content>
 
-      <v-footer fixed app>
+      <v-footer fixed app dark class="primary">
         <v-spacer></v-spacer>
         <span id="span-copyright">&copy; 2018 KINETC </span>
       </v-footer>
