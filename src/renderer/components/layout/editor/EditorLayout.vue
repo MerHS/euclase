@@ -8,20 +8,19 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
+
 import TimelineCanvas from './TimelineCanvas.vue';
 import NoteWrapper from './NoteWrapper.vue';
 import TimelineSvg from './TimelineSvg.vue';
 
-@Component({
+
+export default Vue.extend({
   components: {
     TimelineCanvas,
     NoteWrapper,
     TimelineSvg,
   },
-})
-export default class EditorLayout extends Vue {
-}
+});
 </script>
 
 <style lang="stylus">

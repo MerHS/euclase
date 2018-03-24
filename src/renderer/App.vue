@@ -36,7 +36,7 @@
       </v-toolbar>
 
       <v-content>
-
+        <main-container></main-container>
       </v-content>
 
       <v-footer fixed app>
@@ -50,8 +50,10 @@
 
 <script lang="ts">
   import Vue from 'vue';
+  import MainContainer from './components/MainContainer.vue';
 
   export default Vue.extend({
+    components: { MainContainer },
     name: 'euclase-app',
     watch: {
       mainGrid(val: number) {
@@ -76,7 +78,7 @@
       }
     }
     
-  })
+  });
 </script>
 
 <style lang="stylus">

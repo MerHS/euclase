@@ -110,30 +110,6 @@ const getters: GetterTree<ScoreState, RootState> = {
   },
 
   measurePulseList(state: ScoreState, getters: ScoreGetters): Array<MeasurePulse> {
-    // const { timeSignaturePulseList, maxMeasureNo } = getters;
-    //
-    // let lastPulse: ?MeasurePulse = R.last(timeSignaturePulseList);
-    // if (!lastPulse) {
-    //   throw new Error('measurePulseList returned empty list');
-    // }
-    //
-    // const pulseList = [...timeSignaturePulseList];
-    // if (lastPulse[MP_NO] < maxMeasureNo) {
-    //   const tempPulse = lastPulse;
-    //   lastPulse = [0, 0, 0];
-    //   lastPulse[MP_NO] = maxMeasureNo;
-    //   lastPulse[MP_LEN] = tempPulse[MP_LEN];
-    //   lastPulse[MP_POS] = tempPulse[MP_POS] +
-    //     (tempPulse[MP_LEN] * (maxMeasureNo - tempPulse[MP_NO]));
-    //   pulseList.push(lastPulse);
-    // }
-    //
-    // return _.flatten(
-    //   R.map(
-    //     ([prev, next]) => R.range(prev[MP_NO], next[MP_NO])
-    //       .map(no => [no, prev[MP_LEN], prev[MP_POS] + (prev[MP_LEN] * (no - prev[MP_NO]))]),
-    //     R.aperture(2, pulseList),
-    //   ));
     const resolution = getters.resolution;
     const measureFracList = getters.measureFracList;
 

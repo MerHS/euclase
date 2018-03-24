@@ -5,13 +5,15 @@
 </template>
 
 <script lang="ts">
-import Component from 'vue-class-component';
 import Vue from 'vue';
 
-@Component
-export default class NoteWrapper extends Vue {
-  dragging: boolean = false;
-}
+export default Vue.extend({
+  data() {
+    return {
+      dragging: false,
+    };
+  },
+});
 </script>
 
 <style lang="stylus">
