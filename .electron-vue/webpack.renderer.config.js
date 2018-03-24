@@ -32,7 +32,7 @@ let rendererConfig = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: 'awesome-typescript-loader',
+        loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
           appendTsSuffixTo: [/\.vue$/]
@@ -74,6 +74,7 @@ let rendererConfig = {
           loader: 'vue-loader',
           options: {
             extractCSS: process.env.NODE_ENV === 'production',
+            esModule: true,
             loaders: {
               sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
               scss: 'vue-style-loader!css-loader!sass-loader',

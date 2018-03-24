@@ -36,7 +36,7 @@
       </v-toolbar>
 
       <v-content>
-        <main-container></main-container>
+
       </v-content>
 
       <v-footer fixed app>
@@ -50,11 +50,8 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import Component from 'vue-class-component';
-  
-  import MainContainer from './components/MainContainer.vue';
 
-  @Component({
+  export default Vue.extend({
     name: 'euclase-app',
     watch: {
       mainGrid(val: number) {
@@ -68,16 +65,18 @@
         }
       },
     },
-    components: { MainContainer }
+    data() {
+      return {
+        saveValid: false,
+        miniVariant: false,
+        rightDrawer: false,
+        title: 'Euclase',
+        mainGrid: 4,
+        subGrid: 16,
+      }
+    }
+    
   })
-  export default class App extends Vue {
-    saveValid: boolean = false;
-    miniVariant: boolean = false;
-    rightDrawer: boolean = false;
-    title: string = 'Euclase';
-    mainGrid: number = 4;
-    subGrid: number = 16;
-  }
 </script>
 
 <style lang="stylus">
