@@ -28,9 +28,7 @@ export default Vue.extend({
 
 <style lang="stylus">
 #editor-workspace
-  position: absolute
-  top: 0
-  left: 0
+  position: relative
   overflow: auto
   height: 100%
   width: 100%

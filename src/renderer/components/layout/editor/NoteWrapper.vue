@@ -1,17 +1,29 @@
 <template>
-  <div id="note-wrapper" tabindex="-1" :style="wrapperStyle">
-    <div id="drag-zone" v-show="dragZone.isDragging"></div>
+  <div id="note-wrapper" tabindex="-1" :style="wrapperStyle"
+    @mousedown.left.self.stop="mouseDown">
+    <div id="drag-zone" v-show="isDragging" :style="dragZoneStyle">
+
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { mapState } from 'vuex';
+import { DragZoneState } from 'src/renderer/store/editor';
+import { EditMode, Coord } from 'src/renderer/utils/scoreTypes';
 
 export default Vue.extend({
   props: {
     width: Number,
     height: Number,
+  },
+  data() {
+    return {
+      isDragging: false,
+      dragPosX: 0,
+      dragPosY: 0,
+    };
   },
   computed: {
     wrapperStyle(): Object {
@@ -21,28 +33,55 @@ export default Vue.extend({
       };
     },
     dragZoneStyle(): Object {
-      return {};
+      return {
+        left: `${this.dragZone.dragRect[0][0]}px`,
+        bottom: `${this.dragZone.dragRect[0][1]}px`,
+        width: `${this.dragZone.dragRect[1][0]}px`,
+        height: `${this.dragZone.dragRect[1][1]}px`,
+      };
     },
-    ...mapState('editor', ['editMode', 'dragZone']),
+    dragZone(): DragZoneState {
+      return this.$store.state.editor.dragZone;
+    },
+    editMode(): EditMode {
+      return this.$store.state.editor.editMode;
+    },
   },
   methods: {
     mouseDown(e: MouseEvent) {
-
+      this.isDragging = true;
+      this.getPosition(e);
+      this.$store.commit('editor/dragStart', {
+        coord: [this.dragPosX, this.height - this.dragPosY],
+        isExclusive: e.ctrlKey,
+      });
     },
     mouseMove(e: MouseEvent) {
-      
+      if (this.isDragging) {
+        e.preventDefault();
+        this.getPosition(e);
+        this.$store.commit('editor/dragMove', [this.dragPosX, this.height - this.dragPosY]);
+      }
     },
     mouseUp(e: MouseEvent) {
-      
+      if (this.isDragging) {
+        e.preventDefault();
+        this.getPosition(e);
+        this.$store.commit('editor/dragEnd', [this.dragPosX, this.height - this.dragPosY]);
+      }
+      this.isDragging = false;
+    },
+    getPosition(e: MouseEvent) {
+      const el = this.$el.parentElement!!;
+      this.dragPosX = e.pageX + el.scrollLeft - el.offsetLeft;
+      this.dragPosY = e.pageY + el.scrollTop - el.offsetTop;
     },
   },
   mounted() {
-    this.$el.addEventListener('mousedown', this.mouseDown);
     document.addEventListener('mousemove', this.mouseMove);
     document.addEventListener('mouseup', this.mouseUp);
   },
   beforeDestroy() {
-    this.$el.removeEventListener('mousedown', this.mouseDown);
     document.removeEventListener('mousemove', this.mouseMove);
     document.removeEventListener('mouseup', this.mouseUp);
   },
@@ -70,7 +109,7 @@ export default Vue.extend({
   -ms-user-select: none
   user-select: none
   
-  &.selected &:hover
+  &:hover
     border-color: red
   
 #drag-zone

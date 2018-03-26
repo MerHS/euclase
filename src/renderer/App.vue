@@ -30,7 +30,7 @@
         <main-container></main-container>
       </v-content>
 
-      <v-footer fixed app dark class="primary">
+      <v-footer id="footer" fixed app dark class="primary">
         <v-spacer></v-spacer>
         <span id="span-copyright">&copy; 2018 KINETC </span>
       </v-footer>
@@ -61,11 +61,14 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus">
-  @import './assets/stylus/main.styl'
-  html, body
-    overflow hidden
-  #span-copyright
-    margin-right 10px
+@import './assets/stylus/main.styl'
+html, body
+  overflow hidden
+#span-copyright
+  margin-right 10px
+#footer
+  height: 32px
+  min-height: 32px
 
 </style>
 

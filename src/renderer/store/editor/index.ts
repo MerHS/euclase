@@ -14,8 +14,11 @@ import * as R from 'ramda';
 import { MutationTree, ActionTree, GetterTree, Module } from 'vuex';
 
 export interface DragZoneState {
-  isDragging: boolean;
-  isExclusive: boolean; // ctrl + drag
+  // ctrl + drag
+  isExclusive: boolean;
+  // mouseDown Start Coord
+  dragStartPos: Coord,
+  // [bottom-left Coord, [width, height]]
   dragRect: Rect;
 }
 
@@ -37,8 +40,8 @@ export const state: EditorState = {
   isPanelDirty: false,
   editMode: EditMode.SELECT_MODE,
   dragZone: {
-    isDragging: false,
     isExclusive: false,
+    dragStartPos: [0, 0],
     dragRect: [[0, 0], [0, 0]],
   },
   selectedNotes: [],
@@ -63,11 +66,6 @@ export interface EditorGetters extends CanvasInfo, ScoreGetters, ThemeGetters {
   canvasInfo: CanvasInfo;
 }
 
-/*
-type NoteRenderInfo
-들어가야 할 것 :
-depends on: noteHeight / laneX / laneGroup / timeSignatures / notes
- */
 
 export const getters: GetterTree<EditorState, RootState> = {
   laneXList(_state: EditorState): CanvasInfo['laneXList'] {
@@ -197,14 +195,24 @@ const mutations: MutationTree<EditorState> = {
   setPanelDirty(state: EditorState, isPanelDirty: boolean) {
     state.isPanelDirty = isPanelDirty;
   },
-  dragStart(state: EditorState, option: any) {
-
+  dragStart(state: EditorState, payload: { coord: Coord, isExclusive: boolean }) {
+    state.dragZone.dragStartPos = [payload.coord[0], payload.coord[1]];
+    state.dragZone.dragRect = [[payload.coord[0], payload.coord[1]], [0, 0]];
+    state.dragZone.isExclusive = payload.isExclusive;
   },
-  dragMove(state: EditorState) {
+  dragMove(state: EditorState, coord: Coord) {
+    const [fromX, fromY] = state.dragZone.dragStartPos; // bottom-left point 
+    const [toX, toY] = coord; // top-right point
+    
+    const x = (fromX < toX) ? fromX : toX;
+    const y = (fromY < toY) ? fromY : toY;
+    const w = (fromX < toX) ? (toX - fromX) : (fromX - toX);
+    const h = (fromY < toY) ? (toY - fromY) : (fromY - toY);
 
+    state.dragZone.dragRect = [[x, y], [w, h]];
   },
-  dragEnd(state: EditorState) {
-
+  dragEnd(state: EditorState, coord: Coord) {
+    
   },
   changeMode(state: EditorState, mode: EditMode) {
     state.editMode = mode;

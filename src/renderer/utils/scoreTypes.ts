@@ -1,5 +1,8 @@
 export type Coord = [number, number];
-export type Rect = [Coord, Coord]; // [top-left, bottom-right]
+/**
+ * [bottom-left Coord, [width, height]]
+ */
+export type Rect = [Coord, Coord];
 export type Beat = [number, number];
 export type NoteIndex = string;
 export type SoundIndex = string;
