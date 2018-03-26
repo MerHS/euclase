@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex, { StoreOptions } from 'vuex';
 
 import { editor } from './editor';
+import { createIpcVuexListenerPlugin } from '../ipc/ipcVuexPlugin';
 
 Vue.use(Vuex);
 
@@ -16,6 +17,7 @@ const store: StoreOptions<RootState> = {
   modules: {
     editor,
   },
+  plugins: [createIpcVuexListenerPlugin()],
   strict: process.env.NODE_ENV !== 'production',
 };
 

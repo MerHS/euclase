@@ -59,12 +59,31 @@ const template = [
       },
       { role: 'redo' },
       { type: 'separator' },
+
       { role: 'cut' },
       { role: 'copy' },
       { role: 'paste' },
-      { role: 'pasteandmatchstyle' },
       { role: 'delete' },
       { role: 'selectall' },
+      { type: 'separator' },
+      {
+        label: 'Select Mode',
+        accelerator: 'F2',
+        click(item, focusedWindow) {
+          if (focusedWindow) {
+            focusedWindow.webContents.send('toSelectMode');
+          }
+        },
+      },
+      {
+        label: 'Write Mode',
+        accelerator: 'F3',
+        click(item, focusedWindow) {
+          if (focusedWindow) {
+            focusedWindow.webContents.send('toWriteMode');
+          }
+        },
+      },
     ],
   },
   {

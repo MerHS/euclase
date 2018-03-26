@@ -30,15 +30,8 @@ export default Vue.extend({
     canvasInfo(): CanvasInfo {
       return this.$store.getters['editor/canvasInfo'];
     },
-    ...mapState('editor', ['isPanelDirty']),
   },
   watch: {
-    // isPanelDirty(newVal) {
-    //   if (newVal === true) {
-    //     this.renderCanvas();
-    //     this.$store.commit('editor/setPanelDirty', false);
-    //   }
-    // },
     canvasInfo(newVal) {
       this.renderCanvas();
     },

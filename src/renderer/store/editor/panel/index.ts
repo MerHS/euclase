@@ -27,12 +27,12 @@ const state: PanelState = {
   defaultHeight: 200,
 };
 
-export const PANEL_DIRTY_PROPS: Array<keyof PanelState> = [
-  'panelCount', 'mainGrid', 'subGrid', 'verticalZoom', 'horizontalZoom', 'defaultHeight',
-];
+// export const PANEL_DIRTY_PROPS: Array<keyof PanelState> = [
+//   'panelCount', 'mainGrid', 'subGrid', 'verticalZoom', 'horizontalZoom', 'defaultHeight',
+// ];
 
 const mutations: MutationTree<PanelState> = {
-  assignState(state: PanelState, payload: Partial<PanelState>) {
+  assignPanelState(state: PanelState, payload: Partial<PanelState>) {
     Object.assign(state, payload);
   },
 };

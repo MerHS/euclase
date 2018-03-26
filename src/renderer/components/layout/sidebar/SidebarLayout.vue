@@ -37,7 +37,7 @@ export default Vue.extend({
       return true;
     },
     assignPanelState(payload: any) {
-      this.$store.dispatch('editor/assignPanelState', payload);
+      this.$store.commit('editor/assignPanelState', payload);
     }
   },
   watch: {

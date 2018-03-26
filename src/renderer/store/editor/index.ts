@@ -7,7 +7,7 @@ import Fraction from '../../utils/fraction';
 import { RootState } from '..';
 
 import { theme, ThemeState, ThemeGetters } from './theme';
-import { panel, PanelState, PANEL_DIRTY_PROPS  } from './panel';
+import { panel, PanelState  } from './panel';
 import { note, NoteState } from './note';
 import { score, MeasurePulse, ScoreState } from './score';
 import * as R from 'ramda';
@@ -23,7 +23,6 @@ export interface DragZoneState {
 }
 
 export interface EditorState {
-  isPanelDirty: boolean;
   editMode: EditMode;
   dragZone: DragZoneState;
   selectedNotes: Array<NoteIndex>;
@@ -37,7 +36,6 @@ interface EditorGetterState extends EditorState {
 }
 
 export const state: EditorState = {
-  isPanelDirty: false,
   editMode: EditMode.SELECT_MODE,
   dragZone: {
     isExclusive: false,
@@ -192,9 +190,6 @@ export const getters: GetterTree<EditorState, RootState> = {
 
 
 const mutations: MutationTree<EditorState> = {
-  setPanelDirty(state: EditorState, isPanelDirty: boolean) {
-    state.isPanelDirty = isPanelDirty;
-  },
   dragStart(state: EditorState, payload: { coord: Coord, isExclusive: boolean }) {
     state.dragZone.dragStartPos = [payload.coord[0], payload.coord[1]];
     state.dragZone.dragRect = [[payload.coord[0], payload.coord[1]], [0, 0]];
@@ -215,6 +210,7 @@ const mutations: MutationTree<EditorState> = {
     
   },
   changeMode(state: EditorState, mode: EditMode) {
+    console.log(mode);
     state.editMode = mode;
   },
 };
@@ -227,25 +223,22 @@ type EditorActions = {
   dispatch: Function,
 };
 
-function assignStateAndSetDirty(
-  commit: Function, mutationPath: string, payload: Partial<PanelState>,
-) {
-  commit(mutationPath, payload);
-  for (let i = 0; i < PANEL_DIRTY_PROPS.length; i++) {
-    const panelProp = PANEL_DIRTY_PROPS[i];
-    if (panelProp in payload) {
-      commit('setPanelDirty', true);
-      break;
-    }
-  }
-}
+// function assignStateAndSetDirty(
+//   commit: Function, mutationPath: string, payload: Partial<PanelState>,
+// ) {
+//   commit(mutationPath, payload);
+//   for (let i = 0; i < PANEL_DIRTY_PROPS.length; i++) {
+//     const panelProp = PANEL_DIRTY_PROPS[i];
+//     if (panelProp in payload) {
+//       commit('setPanelDirty', true);
+//       break;
+//     }
+//   }
+// }
 
 const actions: ActionTree<EditorState, RootState> = {
   addNote({ state, getters, commit }: EditorActions, coord: Coord) {
     
-  },
-  assignPanelState({ state, commit }: EditorActions, payload: Partial<PanelState>) {
-    assignStateAndSetDirty(commit, 'assignState', payload);
   },
 };
 

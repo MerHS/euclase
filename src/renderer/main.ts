@@ -26,10 +26,6 @@ Vue.config.productionTip = false;
 
 FastClick(document.body);
 
-ipcRenderer.on('undo', () => {
-  // console.log('undo');
-});
-
 /* eslint-disable no-new */
 new Vue({
   components: { App },
