@@ -31,6 +31,7 @@
       </v-content>
 
       <v-footer id="footer" fixed app dark class="primary">
+        <v-icon class="pl-1">{{ editModeIcon }}</v-icon>
         <v-spacer></v-spacer>
         <span id="span-copyright">&copy; 2018 KINETC </span>
       </v-footer>
@@ -44,6 +45,7 @@ import Vue from 'vue';
 
 import MainContainer from './components/MainContainer.vue';
 import SidebarLayout from './components/layout/sidebar/SidebarLayout.vue';
+import { EditMode } from './utils/scoreTypes';
 
 export default Vue.extend({
   components: { MainContainer, SidebarLayout },
@@ -55,8 +57,25 @@ export default Vue.extend({
       rightDrawer: false,
       title: 'Euclase',
     }
-  }
-  
+  },
+  computed: {
+    editMode(): EditMode {
+      return this.$store.state.editor.editMode;
+    },
+    editModeIcon(): string {
+      // TODO: check material icon
+      switch (this.editMode) {
+        case EditMode.TIME_SELECT_MODE:
+          return 'timer';
+        case EditMode.SELECT_MODE:
+          return 'crop'; 
+        case EditMode.WRITE_MODE:
+          return 'edit'
+        default: 
+          return 'edit';
+      }
+    },
+  },
 });
 </script>
 
@@ -74,6 +93,7 @@ html, body
 
 
 <style>
+@import url('./assets/css/fontawesome-all.min.css');
 @import url('./assets/roboto.css');
 /* Global CSS */
 </style>

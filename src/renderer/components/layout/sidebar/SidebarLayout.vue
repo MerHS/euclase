@@ -2,7 +2,7 @@
   <v-container fluid grid-list-sm>
     <v-layout row wrap>
       <v-flex xs12>
-        <v-text-field label="title" v-model="title" required></v-text-field>
+        <v-text-field label="Title" v-model="title" required></v-text-field>
       </v-flex>
       <v-flex xs6>
         <v-text-field label="Main Grid" :rules="[gridValueValidator]"
@@ -12,11 +12,19 @@
         <v-text-field label="Sub Grid" :rules="[gridValueValidator]"
           type="number" v-model="subGrid" required></v-text-field>
       </v-flex>
-      <v-flex xs12>
-        <v-slider label="VZoom" :max="3" :min="0.2" :step="0.1" v-model="verticalZoom"/>
+      <v-flex xs2 class="icon-arrow">
+        <v-icon>fas fa-arrows-alt-v</v-icon>
       </v-flex>
-      <v-flex xs12>
-        <v-slider label="HZoom" :max="3" :min="0.2" :step="0.1" v-model="horizontalZoom"/>
+      <v-flex xs10>
+        <v-slider class="no-details" thumb-label
+          :max="2" :min="0.2" :step="0.1" v-model="verticalZoom"/>
+      </v-flex>
+      <v-flex xs2 class="icon-arrow">
+        <v-icon>fas fa-arrows-alt-h</v-icon>
+      </v-flex>
+      <v-flex xs10>
+        <v-slider class="no-details" thumb-label
+          :max="2" :min="0.2" :step="0.1" v-model="horizontalZoom"/>
       </v-flex>
     </v-layout>
   </v-container>
@@ -92,10 +100,20 @@ export default Vue.extend({
   background white
   box-shadow 0 5px 5px -3px rgba(0,0,0,0.2), 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12);
 
-//transform
 .sidebar
   width 100%
   height 100%
   padding 7px
+
+.no-details
+  padding 11px 9px 9px 4px
+  & > .input-group__details
+    display none
+
+.icon-arrow
+  margin auto 0
+  text-align center
+
+
 
 </style>

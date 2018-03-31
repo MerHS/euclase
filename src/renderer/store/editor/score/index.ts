@@ -86,7 +86,7 @@ const getters: GetterTree<ScoreState, RootState> = {
     if (maxTS === undefined) {
       return 10;
     }
-    console.dir(state.noteManager);
+    
     const maxTSMeasure = maxTS.measureNo;
     const lastNote = undefined; // TODO: state.noteManager.getLastNote();
     const lastNoteMeasureNo: number = 0 // lastNote ? getters.pulseToMeasureNo(lastNote.time.pulse) : 0;
