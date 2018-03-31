@@ -13,22 +13,6 @@ export default class CanvasUtil {
     this.ctx = ctx;
   }
 
-  width(): number {
-    return this.ctx.canvas.width;
-  }
-
-  height(): number {
-    return this.ctx.canvas.height;
-  }
-
-  flipCoord(coord: Coord): Coord {
-    return [coord[0], this.ctx.canvas.height - coord[1]];
-  }
-
-  flipRect(rect: Rect): Rect {
-    return [this.flipCoord(rect[0]), this.flipCoord(rect[1])];
-  }
-
   static getCanvasUtil(canvas: HTMLCanvasElement): CanvasUtil {
     const ctx = canvas.getContext('2d');
     if (ctx !== null) {
@@ -36,6 +20,14 @@ export default class CanvasUtil {
     } else {
       throw Error(`Cannot get CanvasRenderingContext2D from canvas object: ${canvas}`);
     }
+  }
+
+  width(): number {
+    return this.ctx.canvas.width;
+  }
+
+  height(): number {
+    return this.ctx.canvas.height;
   }
 
   clear() {
@@ -64,20 +56,27 @@ export default class CanvasUtil {
     this.clear();
     this.fillBackground(gridColors.backgroundColor);
 
-    // Draw Background of Each Lanes
-    let laneX = 0;
-    laneStyles.forEach((style: LaneStylePart) => {
+    // Draw Background and Vertical Lane Splitter of Each Lanes
+    ctx.strokeStyle = gridColors.verticalLineColor;
+    ctx.lineWidth = gridColors.lineWidth;
+    ctx.beginPath();
+    for (let laneNo = 0; laneNo < laneStyles.length; laneNo++) {
+      const style = laneStyles[laneNo];
+      const laneX = canvasInfo.laneXList[laneNo];
+      const nextLaneX = 
+        (laneNo == laneStyles.length - 1) ? canvasWidth : canvasInfo.laneXList[laneNo + 1];
       ctx.fillStyle = style.laneBackgroundColor;
-      this._drawRect(laneX, 0, style.width, canvasHeight);
-      laneX += style.width;
-    });
+      this._drawLine(laneX, 0, laneX, canvasHeight);
+      this._drawRect(laneX, 0, nextLaneX - laneX, canvasHeight);
+    }
+    ctx.stroke();
 
     // Stroke Horizontal Panel Splitter
     ctx.strokeStyle = gridColors.sectionBorderColor;
     ctx.lineWidth = gridColors.lineWidth;
     ctx.beginPath();
-    for (let laneNo = 0; laneNo < canvasInfo.panelYList.length; laneNo += 1) {
-      const laneY = canvasInfo.panelYList[laneNo];
+    for (let measureNo = 0; measureNo < canvasInfo.measureYList.length; measureNo += 1) {
+      const laneY = canvasInfo.measureYList[measureNo];
       this._drawLine(0, canvasHeight - laneY, canvasWidth, canvasHeight - laneY);
     }
     ctx.stroke();
@@ -85,8 +84,8 @@ export default class CanvasUtil {
     // Stroke Main Grid
     ctx.strokeStyle = gridColors.mainGridColor;
     ctx.beginPath();
-    for (let laneNo = 0; laneNo < canvasInfo.mainGridYList.length; laneNo += 1) {
-      const laneY = canvasInfo.mainGridYList[laneNo];
+    for (let gridNo = 0; gridNo < canvasInfo.mainGridYList.length; gridNo += 1) {
+      const laneY = canvasInfo.mainGridYList[gridNo];
       this._drawLine(0, canvasHeight - laneY, canvasWidth, canvasHeight - laneY);
     }
     ctx.stroke();
@@ -94,30 +93,19 @@ export default class CanvasUtil {
     // Stroke Sub Grid
     ctx.strokeStyle = gridColors.subGridColor;
     ctx.beginPath();
-    for (let laneNo = 0; laneNo < canvasInfo.subGridYList.length; laneNo += 1) {
-      const laneY = canvasInfo.subGridYList[laneNo];
+    for (let gridNo = 0; gridNo < canvasInfo.subGridYList.length; gridNo += 1) {
+      const laneY = canvasInfo.subGridYList[gridNo];
       this._drawLine(0, canvasHeight - laneY, canvasWidth, canvasHeight - laneY);
     }
-    ctx.stroke();
-
-    // Stroke Vertical Lane Splitter
-    laneX = 0;
-    ctx.strokeStyle = gridColors.verticalLineColor;
-    ctx.lineWidth = gridColors.lineWidth;
-    ctx.beginPath();
-    laneStyles.forEach((style: LaneStylePart) => {
-      this._drawLine(laneX, 0, laneX, canvasHeight);
-      laneX += style.width;
-    });
     ctx.stroke();
 
     // Draw Panel Number  TODO: to text dom
     ctx.font = '13px sans-serif';
     ctx.fillStyle = gridColors.sectionNumberColor;
     // ctx.strokeStyle = gridColors.sectionNumberColor;
-    for (let laneNo = 0; laneNo < canvasInfo.panelYList.length; laneNo += 1) {
-      const laneY = canvasInfo.panelYList[laneNo];
-      const laneStr = _.padStart(`${laneNo}`, 3, '0');
+    for (let measureNo = 0; measureNo < canvasInfo.measureYList.length; measureNo += 1) {
+      const laneY = canvasInfo.measureYList[measureNo];
+      const laneStr = _.padStart(`${measureNo}`, 3, '0');
       // ctx.strokeText(`[${laneStr}]`, 0, canvasHeight - (laneY + 3));
       ctx.fillText(`[${laneStr}]`, 0, canvasHeight - (laneY + 3));
     }

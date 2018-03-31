@@ -12,6 +12,12 @@
         <v-text-field label="Sub Grid" :rules="[gridValueValidator]"
           type="number" v-model="subGrid" required></v-text-field>
       </v-flex>
+      <v-flex xs12>
+        <v-slider label="VZoom" :max="3" :min="0.2" :step="0.1" v-model="verticalZoom"/>
+      </v-flex>
+      <v-flex xs12>
+        <v-slider label="HZoom" :max="3" :min="0.2" :step="0.1" v-model="horizontalZoom"/>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -19,6 +25,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { mapActions } from 'vuex';
+import { PanelState } from 'src/renderer/store/editor/panel';
 
 export default Vue.extend({
   data() {
@@ -26,6 +33,8 @@ export default Vue.extend({
       title: '',
       mainGrid: 4,
       subGrid: 16,
+      verticalZoom: 1,
+      horizontalZoom: 1,
     };
   },
   methods: {
@@ -36,7 +45,7 @@ export default Vue.extend({
       }
       return true;
     },
-    assignPanelState(payload: any) {
+    assignPanelState(payload: Partial<PanelState>) {
       this.$store.commit('editor/assignPanelState', payload);
     }
   },
@@ -53,9 +62,19 @@ export default Vue.extend({
         this.assignPanelState({ subGrid: val });
       }
     },
+    verticalZoom(val: number) {
+      if (val > 0) {
+        this.assignPanelState({ verticalZoom: val });
+      }
+    },
+    horizontalZoom(val: number) {
+      if (val > 0) {
+        this.assignPanelState({ horizontalZoom: val });
+      }
+    },
     title(val: string) {
       
-    }
+    },
   },
 });
 </script>

@@ -16,8 +16,9 @@ import { MutationTree, ActionTree, GetterTree, Module } from 'vuex';
 export interface DragZoneState {
   // ctrl + drag
   isExclusive: boolean;
+  showDragZone: boolean;
   // mouseDown Start Coord
-  dragStartPos: Coord,
+  dragStartPos: Coord;
   // [bottom-left Coord, [width, height]]
   dragRect: Rect;
 }
@@ -39,6 +40,7 @@ export const state: EditorState = {
   editMode: EditMode.SELECT_MODE,
   dragZone: {
     isExclusive: false,
+    showDragZone: false,
     dragStartPos: [0, 0],
     dragRect: [[0, 0], [0, 0]],
   },
@@ -50,11 +52,9 @@ export interface CanvasInfo {
   heightPixel: number;
   laneXList: Array<number>;
   laneEditableList: Array<boolean>;
-  editGroupList: Array<number>;
-  panelYList: Array<number>; // TODO: array to calculation function
+  measureYList: Array<number>; // TODO: array to calculation function
   mainGridYList: Array<number>; // TODO: array to calculation function
   subGridYList: Array<number>; // TODO: array to calculation function
-  gridYList: Array<number>; // TODO: array to calculation function
 }
 
 export interface EditorGetters extends CanvasInfo, ScoreGetters, ThemeGetters {
@@ -64,22 +64,17 @@ export interface EditorGetters extends CanvasInfo, ScoreGetters, ThemeGetters {
   canvasInfo: CanvasInfo;
 }
 
-
 export const getters: GetterTree<EditorState, RootState> = {
   laneXList(_state: EditorState): CanvasInfo['laneXList'] {
     const state = _state as EditorGetterState;
+    const horizontalZoom = state.panel.horizontalZoom;
     const laneStyles = state.theme.currentTheme.laneStyles;
-    return R.scan((sum, style) => sum + style.width, 0, laneStyles);
+    return R.scan((sum, style) => sum + style.width * horizontalZoom, 0, laneStyles);
   },
   laneEditableList(state: EditorState, getters: Object): CanvasInfo['laneEditableList'] {
     return [];
   },
-  editGroupList(state: EditorState): CanvasInfo['editGroupList'] {
-    return [];
-  },
-  panelYList(
-    state: EditorState, getters: EditorGetters,
-  ): CanvasInfo['panelYList'] {
+  measureYList(state: EditorState, getters: EditorGetters): CanvasInfo['measureYList'] {
     const
       measurePulseList: Array<MeasurePulse> = getters.measurePulseList,
       pulseToYPixel: (pulse: number) => number = getters.pulseToYPixel;
@@ -117,19 +112,13 @@ export const getters: GetterTree<EditorState, RootState> = {
       (frac: Fraction) => pulseToYPixel(frac.mulInt(resolution).value()),
     );
   },
-  gridYList(state: EditorState, getters: EditorGetters): CanvasInfo['gridYList'] {
-    const mainGridYList = getters.mainGridYList;
-    const subGridYList = getters.subGridYList;
-
-    return mergeSortedList(mainGridYList, subGridYList, (a, b) => a < b);
-  },
   widthPixel(_state: EditorState, getters: EditorGetters): CanvasInfo['widthPixel'] {
     const state = _state as EditorGetterState;
     const
       totalWidth: number = getters.totalWidth,
-      verticalZoom = state.panel.verticalZoom;
+      horizontalZoom = state.panel.horizontalZoom;
 
-    return totalWidth * verticalZoom;
+    return totalWidth * horizontalZoom;
   },
   heightPixel(_state: EditorState, getters: EditorGetters): CanvasInfo['heightPixel'] {
     const state = _state as EditorGetterState;
@@ -137,22 +126,20 @@ export const getters: GetterTree<EditorState, RootState> = {
       resolution: number = getters.resolution,
       maxPulse: number = getters.maxPulse,
       defaultHeight = state.panel.defaultHeight,
-      horizontalZoom = state.panel.horizontalZoom;
+      verticalZoom = state.panel.verticalZoom;
 
-    return defaultHeight * horizontalZoom * (maxPulse / resolution);
+    return defaultHeight * verticalZoom * (maxPulse / resolution);
   },
   canvasInfo(state: EditorState, getters: EditorGetters): CanvasInfo {
-    const { laneXList, laneEditableList, editGroupList, panelYList,
-      mainGridYList, subGridYList, gridYList, widthPixel, heightPixel } = getters;
+    const { laneXList, laneEditableList, measureYList,
+      mainGridYList, subGridYList, widthPixel, heightPixel } = getters;
 
     return {
       laneXList,
       laneEditableList,
-      editGroupList,
-      panelYList,
+      measureYList,
       mainGridYList,
       subGridYList,
-      gridYList,
       widthPixel,
       heightPixel,
     };
@@ -171,17 +158,13 @@ export const getters: GetterTree<EditorState, RootState> = {
 
     return (pulse: number) => heightPixel * (pulse / maxPulse);
   },
-  noteRenderInfo(state: EditorState): Array<Object> {
-    // TODO: Draw By Layers
-    return [];
-  },
   yPixelToGridPulse(state: EditorState, getters: EditorGetters): (yPixel: number) => number {
     const
-      gridYList = getters.gridYList,
+    subGridYList = getters.subGridYList,
       yPixelToPulse = getters.yPixelToPulse;
 
     return (yPixel: number) => {
-      const gridPixel = binarySearch(gridYList, pixel => pixel <= yPixel);
+      const gridPixel = binarySearch(subGridYList, pixel => pixel <= yPixel);
 
       return (gridPixel == null) ? 0 : yPixelToPulse(gridPixel);
     };
@@ -191,6 +174,9 @@ export const getters: GetterTree<EditorState, RootState> = {
 
 const mutations: MutationTree<EditorState> = {
   dragStart(state: EditorState, payload: { coord: Coord, isExclusive: boolean }) {
+    if (state.editMode === EditMode.SELECT_MODE) {
+      state.dragZone.showDragZone = true;
+    }
     state.dragZone.dragStartPos = [payload.coord[0], payload.coord[1]];
     state.dragZone.dragRect = [[payload.coord[0], payload.coord[1]], [0, 0]];
     state.dragZone.isExclusive = payload.isExclusive;
@@ -207,10 +193,9 @@ const mutations: MutationTree<EditorState> = {
     state.dragZone.dragRect = [[x, y], [w, h]];
   },
   dragEnd(state: EditorState, coord: Coord) {
-    
+    state.dragZone.showDragZone = false;
   },
   changeMode(state: EditorState, mode: EditMode) {
-    console.log(mode);
     state.editMode = mode;
   },
 };

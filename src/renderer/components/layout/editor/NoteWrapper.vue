@@ -1,7 +1,7 @@
 <template>
   <div id="note-wrapper" tabindex="-1" :style="wrapperStyle"
     @mousedown.left.self.stop="mouseDown">
-    <div id="drag-zone" v-show="isDragging" :style="dragZoneStyle">
+    <div id="drag-zone" v-show="dragZone.showDragZone" :style="dragZoneStyle">
 
     </div>
   </div>

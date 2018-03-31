@@ -54,10 +54,22 @@ export interface ScoreGetters {
   maxPulse: number;
   pulseToTime: (pulse: number) => number;
   timeToPulse: (time: number) => number;
-  timeSignaturePulseList: Array<MeasurePulse>;
-  measurePulseList: Array<MeasurePulse>;
-  measureFracList: Array<[number, Fraction, Fraction]>;
   pulseToMeasureNo: (pulse: number) => number;
+
+  /**
+   * list of [Measure Number, Pulse Length of Meter, Pulse Position of Measure] of each TimeSignatures
+   */
+  timeSignaturePulseList: Array<MeasurePulse>;
+
+  /**
+   * list of [Measure Number, Pulse Length of Meter, Pulse Position of Measure] of every Measure
+   */
+  measurePulseList: Array<MeasurePulse>;
+ 
+  /**
+   * list of [Measure Number, Fraction Length of Meter, Fraction Position of Measure] of every Measure
+   */
+  measureFracList: Array<MeasureFraction>;
 }
 
 const getters: GetterTree<ScoreState, RootState> = {
@@ -72,13 +84,14 @@ const getters: GetterTree<ScoreState, RootState> = {
   maxMeasureNo(state: ScoreState, getters: ScoreGetters): number {
     const maxTS = _.maxBy(state.noteManager.timeSignatures, 'measureNo');
     if (maxTS === undefined) {
-      return 5;
+      return 10;
     }
+    console.dir(state.noteManager);
     const maxTSMeasure = maxTS.measureNo;
-    const lastNote = state.noteManager.getLastNote();
-    const lastNoteMeasureNo: number = lastNote ? getters.pulseToMeasureNo(lastNote.time.pulse) : 0;
-
-    return R.max(maxTSMeasure + 5, lastNoteMeasureNo + 5);
+    const lastNote = undefined; // TODO: state.noteManager.getLastNote();
+    const lastNoteMeasureNo: number = 0 // lastNote ? getters.pulseToMeasureNo(lastNote.time.pulse) : 0;
+    
+    return R.max(maxTSMeasure + 10, lastNoteMeasureNo + 10);
   },
 
   maxPulse(state: ScoreState, getters: ScoreGetters): number {
@@ -87,12 +100,6 @@ const getters: GetterTree<ScoreState, RootState> = {
     return lastPulse ? lastPulse[MP_LEN] + lastPulse[MP_POS] : 0;
   },
 
-  /**
-   * return list of [Measure Number, Pulse Length of Meter, Pulse Position of this Measure]
-   * @param state: ScoreState
-   * @param getters: ScoreGetters
-   * @return MeasurePulse list of each TimeSignatures
-   */
   timeSignaturePulseList(state: ScoreState, getters: ScoreGetters): Array<MeasurePulse> {
     const timeSignatures = state.noteManager.timeSignatures;
     const measureNoList = timeSignatures.map(ts => ts.measureNo);
