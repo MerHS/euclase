@@ -3,7 +3,11 @@
     <timeline-canvas :width="widthPixel" :height="heightPixel"/>
     <div id="lane-caption-container" :style="{ color: currGridColors.captionColor }">
       <div v-for="(stylePart, index) in currLaneStyles"
-        :key="index" class="lane-caption" :style="{ left: `${ laneXList[index] + 2 }px` }">
+        :key="index" class="lane-caption caption" :style="{ 
+          left: `${ laneXList[index] + 2 }px`,
+          width: `${ (index < laneXList.length) ?
+            (laneXList[index + 1] - laneXList[index]) : 100 }px`
+        }">
         {{ stylePart.caption }}
       </div>
     </div>
@@ -54,10 +58,12 @@ export default Vue.extend({
 #lane-caption-container
   position: sticky 
   top: 0
-  font-size: 12px
 
 .lane-caption
   position: absolute
   top: 0
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis
   
 </style>
