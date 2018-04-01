@@ -56,19 +56,11 @@ export interface ScoreGetters {
   timeToPulse: (time: number) => number;
   pulseToMeasureNo: (pulse: number) => number;
 
-  /**
-   * list of [Measure Number, Pulse Length of Meter, Pulse Position of Measure] of each TimeSignatures
-   */
+  /** list of [Measure Number, Pulse Length of Meter, Pulse Position of Measure] of each TimeSignatures */
   timeSignaturePulseList: Array<MeasurePulse>;
-
-  /**
-   * list of [Measure Number, Pulse Length of Meter, Pulse Position of Measure] of every Measure
-   */
+  /** list of [Measure Number, Pulse Length of Meter, Pulse Position of Measure] of every Measure */
   measurePulseList: Array<MeasurePulse>;
- 
-  /**
-   * list of [Measure Number, Fraction Length of Meter, Fraction Position of Measure] of every Measure
-   */
+  /** list of [Measure Number, Fraction Length of Meter, Fraction Position of Measure] of every Measure */
   measureFracList: Array<MeasureFraction>;
 }
 
@@ -88,8 +80,8 @@ const getters: GetterTree<ScoreState, RootState> = {
     }
     
     const maxTSMeasure = maxTS.measureNo;
-    const lastNote = undefined; // TODO: state.noteManager.getLastNote();
-    const lastNoteMeasureNo: number = 0 // lastNote ? getters.pulseToMeasureNo(lastNote.time.pulse) : 0;
+    const lastNote = state.noteManager.getLastNote();
+    const lastNoteMeasureNo: number = lastNote ? getters.pulseToMeasureNo(lastNote.time.pulse) : 0;
     
     return R.max(maxTSMeasure + 10, lastNoteMeasureNo + 10);
   },

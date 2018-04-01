@@ -1,6 +1,9 @@
 <template>
   <div id="note-wrapper" tabindex="-1" :style="wrapperStyle"
     @mousedown.left.self.stop="mouseDown">
+    <div v-for="(note, noteIndex) in noteManager.getAllNote()" :key="noteIndex" class="note">
+    </div>
+    <div id="preview-note" class="note" :style="previewNoteStyle"></div>
     <div id="drag-zone" v-show="dragZone.showDragZone" :style="dragZoneStyle">
 
     </div>
@@ -10,8 +13,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { mapState } from 'vuex';
-import { DragZoneState } from 'src/renderer/store/editor';
-import { EditMode, Coord } from 'src/renderer/utils/scoreTypes';
+import { DragZoneState } from '../../../store/editor';
+import { EditMode, Coord } from '../../../utils/scoreTypes';
+import { NoteManager } from '../../../utils/noteUtil';
 
 export default Vue.extend({
   props: {
@@ -40,12 +44,10 @@ export default Vue.extend({
         height: `${this.dragZone.dragRect[1][1]}px`,
       };
     },
-    dragZone(): DragZoneState {
-      return this.$store.state.editor.dragZone;
-    },
-    editMode(): EditMode {
-      return this.$store.state.editor.editMode;
-    },
+    dragZone(): DragZoneState { return this.$store.state.editor.dragZone; },
+    editMode(): EditMode { return this.$store.state.editor.editMode; },
+    noteManager(): NoteManager { return this.$store.state.editor.score.noteManager; },
+    previewNoteStyle(): Partial<CSSStyleDeclaration> { return this.$store.state.editor.previewNoteStyle; }
   },
   methods: {
     mouseDown(e: MouseEvent) {
@@ -61,6 +63,8 @@ export default Vue.extend({
         e.preventDefault();
         this.getPosition(e);
         this.$store.commit('editor/dragMove', [this.dragPosX, this.height - this.dragPosY]);
+      } else if (this.editMode === EditMode.WRITE_MODE) {
+        this.$store.dispatch('editor/setPreviewNote', [this.dragPosX, this.height - this.dragPosY]);
       }
     },
     mouseUp(e: MouseEvent) {
@@ -115,5 +119,8 @@ export default Vue.extend({
 #drag-zone
   position: absolute
   border: 1px solid green
+
+.note
+  position: absolute
   
 </style>

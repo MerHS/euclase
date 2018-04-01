@@ -12,17 +12,7 @@ export interface GridColors {
   sectionNumberColor: ColorString;
 };
 
-export interface LaneStyleOption {
-  width?: number;
-  caption?: string;
-  editGroup?: number;
-  isVisible?: boolean;
-  noteColor?: ColorString;
-  noteLabelColor?: ColorString;
-  longNoteColor?: ColorString;
-  longNoteLabelColor?: ColorString;
-  laneBackgroundColor?: ColorString;
-}
+export type LaneStyleOption = Partial<LaneStylePart>;
 
 export interface LaneStylePart {
   width: number;

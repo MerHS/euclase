@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import { Coord, NoteIndex, Rect, EditMode } from '../../utils/scoreTypes';
+import { Coord, NoteIndex, Rect, EditMode, Note } from '../../utils/scoreTypes';
 import { MP_LEN, MP_POS, ScoreGetters, MeasureFraction } from './score';
 import { binarySearch, mergeSortedList } from '../../utils/noteUtil';
 import Fraction from '../../utils/fraction';
@@ -25,8 +25,12 @@ export interface DragZoneState {
 
 export interface EditorState {
   editMode: EditMode;
+  /** value of editMode when drag is started */
+  dragStartEditMode: EditMode;
   dragZone: DragZoneState;
   selectedNotes: Array<NoteIndex>;
+  previewNote: Note | null;
+  previewNoteStyle: Partial<CSSStyleDeclaration>;
 }
 
 interface EditorGetterState extends EditorState {
@@ -38,6 +42,7 @@ interface EditorGetterState extends EditorState {
 
 export const state: EditorState = {
   editMode: EditMode.SELECT_MODE,
+  dragStartEditMode: EditMode.SELECT_MODE,
   dragZone: {
     isExclusive: false,
     showDragZone: false,
@@ -45,6 +50,16 @@ export const state: EditorState = {
     dragRect: [[0, 0], [0, 0]],
   },
   selectedNotes: [],
+  previewNote: null,
+  previewNoteStyle: {
+    left: '0px',
+    bottom: '0px',
+    height: '10px',
+    width: '10px',
+    border: '1px solid transparent',
+    background: '#000000',
+    display: 'none',
+  },
 };
 
 export interface CanvasInfo {
@@ -71,7 +86,9 @@ export const getters: GetterTree<EditorState, RootState> = {
     const laneStyles = state.theme.currentTheme.laneStyles;
     return R.scan((sum, style) => sum + style.width * horizontalZoom, 0, laneStyles);
   },
-  laneEditableList(state: EditorState, getters: Object): CanvasInfo['laneEditableList'] {
+  laneEditableList(_state: EditorState, getters: EditorGetters): CanvasInfo['laneEditableList'] {
+    const state = _state as EditorGetterState;
+    const laneStyles = state.theme.currentTheme.laneStyles;
     return [];
   },
   measureYList(state: EditorState, getters: EditorGetters): CanvasInfo['measureYList'] {
@@ -160,7 +177,7 @@ export const getters: GetterTree<EditorState, RootState> = {
   },
   yPixelToGridPulse(state: EditorState, getters: EditorGetters): (yPixel: number) => number {
     const
-    subGridYList = getters.subGridYList,
+      subGridYList = getters.subGridYList,
       yPixelToPulse = getters.yPixelToPulse;
 
     return (yPixel: number) => {
@@ -174,12 +191,18 @@ export const getters: GetterTree<EditorState, RootState> = {
 
 const mutations: MutationTree<EditorState> = {
   dragStart(state: EditorState, payload: { coord: Coord, isExclusive: boolean }) {
+    state.dragStartEditMode = state.editMode;
+
     if (state.editMode === EditMode.SELECT_MODE) {
       state.dragZone.showDragZone = true;
     }
     state.dragZone.dragStartPos = [payload.coord[0], payload.coord[1]];
     state.dragZone.dragRect = [[payload.coord[0], payload.coord[1]], [0, 0]];
     state.dragZone.isExclusive = payload.isExclusive;
+
+    if (state.editMode === EditMode.WRITE_MODE) {
+      // TODO: add previewNote
+    }
   },
   dragMove(state: EditorState, coord: Coord) {
     const [fromX, fromY] = state.dragZone.dragStartPos; // bottom-left point 
@@ -191,12 +214,29 @@ const mutations: MutationTree<EditorState> = {
     const h = (fromY < toY) ? (toY - fromY) : (fromY - toY);
 
     state.dragZone.dragRect = [[x, y], [w, h]];
+
+    if (state.dragStartEditMode === EditMode.WRITE_MODE) {
+      // TODO: calculate LN Note
+    }
   },
   dragEnd(state: EditorState, coord: Coord) {
     state.dragZone.showDragZone = false;
+
+    // TODO: if previewNote != null, commit previewNote to noteManager
   },
   changeMode(state: EditorState, mode: EditMode) {
     state.editMode = mode;
+
+    if (mode !== EditMode.SELECT_MODE) {
+      state.dragZone.showDragZone = false;
+    }
+
+    if (mode === EditMode.WRITE_MODE) {
+      state.previewNoteStyle.display = 'block';
+    } else {
+      state.previewNote = null;
+      state.previewNoteStyle.display = 'none';
+    }
   },
 };
 
@@ -208,22 +248,13 @@ type EditorActions = {
   dispatch: Function,
 };
 
-// function assignStateAndSetDirty(
-//   commit: Function, mutationPath: string, payload: Partial<PanelState>,
-// ) {
-//   commit(mutationPath, payload);
-//   for (let i = 0; i < PANEL_DIRTY_PROPS.length; i++) {
-//     const panelProp = PANEL_DIRTY_PROPS[i];
-//     if (panelProp in payload) {
-//       commit('setPanelDirty', true);
-//       break;
-//     }
-//   }
-// }
-
 const actions: ActionTree<EditorState, RootState> = {
   addNote({ state, getters, commit }: EditorActions, coord: Coord) {
     
+  },
+  setPreviewNote({ state, getters, commit }: EditorActions, coord: Coord) {
+    const yPixelToGridPulse = getters.yPixelToGridPulse;
+
   },
 };
 

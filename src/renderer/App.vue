@@ -63,7 +63,7 @@ export default Vue.extend({
       return this.$store.state.editor.editMode;
     },
     editModeIcon(): string {
-      // TODO: check material icon
+      // TODO: move to EditMode class
       switch (this.editMode) {
         case EditMode.TIME_SELECT_MODE:
           return 'timer';

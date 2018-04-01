@@ -105,9 +105,9 @@ export class NoteManager {
   playNoteList: PlayNote[]; // sorted by pulse
   bpmNoteList: BPMNote[]; // sorted by pulse
   stopNoteList: StopNote[]; // sorted by pulse
+  timeSignatures: TimeSignature[]; // sorted by measureNo
   dirtyNotes: Set<NoteIndex>;
   dirtyPulse: number;
-  timeSignatures: TimeSignature[]; // sorted by measureNo
 
   constructor(bpm: number, resolution: number) {
     this.bpm = bpm;
@@ -167,6 +167,10 @@ export class NoteManager {
     });
 
     return lastNote;
+  }
+
+  getAllNote(): NoteManager['allNotes'] {
+    return this.allNotes;
   }
 
   setNote(note: Note): void {
