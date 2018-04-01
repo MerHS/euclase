@@ -3,6 +3,11 @@ import { BPMNote, Note, NoteIndex, StopNote, TimeSignature, TrackIndex,
 
 import * as _ from 'lodash';
 
+/**
+ * Get the index of first matched item with a matcher
+ * @param list Ascending sorted list 
+ * @param matcher should be used like `x => x >= number` 
+ */
 export function binarySearchIndex<T>(list: Array<T>, matcher: (item: T) => boolean): number {
   let
     start = 0,
@@ -86,7 +91,7 @@ export class NoteFactory {
 
   constructor() {
     this.nextIndex = 0;
-    this.currTrack = '';
+    this.currTrack = 0;
     this.musicNotePropTemplate = new MusicNoteProps();
     this.eventNotePropTemplate = new EventNoteProps();
   }

@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 
-import { Coord, NoteIndex, Rect, EditMode, Note } from '../../utils/scoreTypes';
+import { Coord, NoteIndex, Rect, EditMode, Note, LaneIndex } from '../../utils/scoreTypes';
 import { MP_LEN, MP_POS, ScoreGetters, MeasureFraction } from './score';
-import { binarySearch, mergeSortedList } from '../../utils/noteUtil';
+import { binarySearch, mergeSortedList, binarySearchIndex } from '../../utils/noteUtil';
 import Fraction from '../../utils/fraction';
 import { RootState } from '..';
 
@@ -23,20 +23,25 @@ export interface DragZoneState {
   dragRect: Rect;
 }
 
+interface PreviewNoteState {
+  isVisible: boolean;
+  laneIndex: LaneIndex;
+  pulse: number;
+}
+
 export interface EditorState {
   editMode: EditMode;
   /** value of editMode when drag is started */
   dragStartEditMode: EditMode;
   dragZone: DragZoneState;
   selectedNotes: Array<NoteIndex>;
-  previewNote: Note | null;
-  previewNoteStyle: Partial<CSSStyleDeclaration>;
+  previewNoteValue: PreviewNoteState;
 }
 
 interface EditorGetterState extends EditorState {
   theme: ThemeState;
   panel: PanelState;
-  notes: NoteState;
+  note: NoteState;
   score: ScoreState;
 }
 
@@ -50,15 +55,10 @@ export const state: EditorState = {
     dragRect: [[0, 0], [0, 0]],
   },
   selectedNotes: [],
-  previewNote: null,
-  previewNoteStyle: {
-    left: '0px',
-    bottom: '0px',
-    height: '10px',
-    width: '10px',
-    border: '1px solid transparent',
-    background: '#000000',
-    display: 'none',
+  previewNoteValue: {
+    isVisible: false,
+    laneIndex: 0,
+    pulse: 0,
   },
 };
 
@@ -77,6 +77,7 @@ export interface EditorGetters extends CanvasInfo, ScoreGetters, ThemeGetters {
   yPixelToPulse: (yPixel: number) => number;
   pulseToYPixel: (pulse: number) => number;
   canvasInfo: CanvasInfo;
+  laneWidthList: number[];
 }
 
 export const getters: GetterTree<EditorState, RootState> = {
@@ -86,10 +87,16 @@ export const getters: GetterTree<EditorState, RootState> = {
     const laneStyles = state.theme.currentTheme.laneStyles;
     return R.scan((sum, style) => sum + style.width * horizontalZoom, 0, laneStyles);
   },
+  laneWidthList(_state: EditorState, getters: EditorGetters): EditorGetters['laneWidthList'] {
+    const state = _state as EditorGetterState;
+    const horizontalZoom = state.panel.horizontalZoom;
+    const laneStyles = state.theme.currentTheme.laneStyles;
+    return laneStyles.map(style => style.width * horizontalZoom);
+  },
   laneEditableList(_state: EditorState, getters: EditorGetters): CanvasInfo['laneEditableList'] {
     const state = _state as EditorGetterState;
     const laneStyles = state.theme.currentTheme.laneStyles;
-    return [];
+    return laneStyles.map(style => style.editGroup >= 0);
   },
   measureYList(state: EditorState, getters: EditorGetters): CanvasInfo['measureYList'] {
     const
@@ -181,11 +188,35 @@ export const getters: GetterTree<EditorState, RootState> = {
       yPixelToPulse = getters.yPixelToPulse;
 
     return (yPixel: number) => {
-      const gridPixel = binarySearch(subGridYList, pixel => pixel <= yPixel);
+      const gridPixel = binarySearch(subGridYList, pixel => pixel >= yPixel);
 
       return (gridPixel == null) ? 0 : yPixelToPulse(gridPixel);
     };
   },
+  previewNoteStyle(_state: EditorState, getters: EditorGetters): Partial<CSSStyleDeclaration> {
+    const state = _state as EditorGetterState;
+    const laneIndex = state.previewNoteValue.laneIndex;
+    const laneStyles = state.theme.currentTheme.laneStyles 
+    
+    // invalid laneIndex -> do not display
+    if (laneIndex < 0 || laneIndex >= laneStyles.length) {
+      return {
+        display: 'none',
+      };
+    }
+
+    const yPixel = getters.pulseToYPixel(state.previewNoteValue.pulse);
+
+    return {
+      left: `${getters.laneXList[laneIndex]}px`,
+      bottom: `${yPixel}px`,
+      width: `${getters.laneWidthList[laneIndex]}px`,
+      height: `${state.note.noteHeight}px`,
+      border: `0.5px solid ${state.note.borderColor}`,
+      background: `${laneStyles[laneIndex].noteColor}`,
+      display: state.previewNoteValue.isVisible ? 'block' : 'none',
+    };
+  }
 };
 
 
@@ -232,11 +263,17 @@ const mutations: MutationTree<EditorState> = {
     }
 
     if (mode === EditMode.WRITE_MODE) {
-      state.previewNoteStyle.display = 'block';
+      state.previewNoteValue.isVisible = true;
     } else {
-      state.previewNote = null;
-      state.previewNoteStyle.display = 'none';
+      state.previewNoteValue.isVisible = false;
     }
+  },
+  setPreviewNoteStyle(
+    state: EditorState,
+    position: { pulse: number, laneIndex: number },
+  ) {
+    state.previewNoteValue.pulse = position.pulse;
+    state.previewNoteValue.laneIndex = position.laneIndex;
   },
 };
 
@@ -255,6 +292,12 @@ const actions: ActionTree<EditorState, RootState> = {
   setPreviewNote({ state, getters, commit }: EditorActions, coord: Coord) {
     const yPixelToGridPulse = getters.yPixelToGridPulse;
 
+    const pulse = yPixelToGridPulse(coord[1]);
+    const laneIndex = binarySearchIndex(getters.laneXList, laneX => laneX >= coord[0]) - 1;
+    
+    if (laneIndex != null) {
+      commit('setPreviewNoteStyle', { pulse, laneIndex });
+    }
   },
 };
 

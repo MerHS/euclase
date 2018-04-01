@@ -5,7 +5,7 @@
 import { Module } from 'vuex';
 
 import { ColorString } from '../../../utils/themeTypes';
-import { green, red, transparent, cyan } from '../../../utils/themeConst';
+import { green, red, white, cyan } from '../../../utils/themeConst';
 import { RootState } from '../..';
 
 
@@ -21,7 +21,7 @@ export interface NoteState {
 const state: NoteState = {
   noteHeight: 10,
   hiddenNoteOpacity: 0.5,
-  borderColor: transparent,
+  borderColor: white,
   borderColorOnMouseOver: green,
   borderColorOnSelection: red,
   borderColorOnMouseOverLN: cyan,

@@ -6,8 +6,8 @@ export type Rect = [Coord, Coord];
 export type Beat = [number, number];
 export type NoteIndex = string;
 export type SoundIndex = string;
-export type LaneIndex = string;
-export type TrackIndex = string;
+export type LaneIndex = number;
+export type TrackIndex = number;
 
 export interface ScoreMetaData {
   title: string;
@@ -90,8 +90,8 @@ export class PlayNoteProps {
   lnNextPart: NoteIndex | null;
 
   constructor() {
-    this.laneIndex = '';
-    this.trackIndex = '';
+    this.laneIndex = 0;
+    this.trackIndex = 0;
     this.lnPrevPart = null;
     this.lnNextPart = null;
   }
