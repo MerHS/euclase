@@ -49,6 +49,13 @@ export default Vue.extend({
     noteManager(): NoteManager { return this.$store.state.editor.score.noteManager; },
     previewNoteStyle(): Partial<CSSStyleDeclaration> { return this.$store.getters['editor/previewNoteStyle']; }
   },
+  watch: {
+    editMode(newVal: EditMode) {
+      if (newVal === EditMode.WRITE_MODE) {
+        this.$store.dispatch('editor/setPreviewNote', [this.dragPosX, this.height - this.dragPosY]);
+      }
+    },
+  },
   methods: {
     mouseDown(e: MouseEvent) {
       this.isDragging = true;
@@ -59,13 +66,12 @@ export default Vue.extend({
       });
     },
     mouseMove(e: MouseEvent) {
+      this.getPosition(e);
       if (this.isDragging) {
         e.preventDefault();
-        this.getPosition(e);
         this.$store.commit('editor/dragMove', [this.dragPosX, this.height - this.dragPosY]);
       } else if (this.editMode === EditMode.WRITE_MODE) {
         e.preventDefault();
-        this.getPosition(e);
         this.$store.dispatch('editor/setPreviewNote', [this.dragPosX, this.height - this.dragPosY]);
       }
     },
