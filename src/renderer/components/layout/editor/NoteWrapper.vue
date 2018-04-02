@@ -14,7 +14,7 @@
 import Vue from 'vue';
 import { mapState } from 'vuex';
 import { DragZoneState } from '../../../store/editor';
-import { EditMode, Coord } from '../../../utils/scoreTypes';
+import { EditMode, Coord } from '../../../utils/types/scoreTypes';
 import { NoteManager } from '../../../utils/noteUtil';
 
 export default Vue.extend({

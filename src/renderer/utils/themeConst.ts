@@ -1,5 +1,5 @@
 //  
-import { ColorString, GridColors, LaneStylePart } from './themeTypes';
+import { ColorString, GridColors, LaneStylePart } from './types/themeTypes';
 
 // 'rgba(1, 2, 3, 4)' => ' 4'
 const alphaNumber = /,([^,]+)\)/;

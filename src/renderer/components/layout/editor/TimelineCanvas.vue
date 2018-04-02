@@ -9,7 +9,7 @@ import Vue from 'vue';
 import { mapGetters, mapState } from 'vuex';
 
 import CanvasUtil from '../../../utils/canvasUtil';
-import { LaneTheme } from '../../../utils/themeTypes';
+import { LaneTheme } from '../../../utils/types/themeTypes';
 import { CanvasInfo } from '../../../store/editor';
 
 export default Vue.extend({

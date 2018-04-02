@@ -5,7 +5,7 @@ import { defaultGridColor, defaultLaneStyle } from '../../../utils/themeConst';
 import {
   GridColors, LaneStyleSettings, LaneStyleSettingPart,
   LaneStylePreset, LaneTheme, LaneStyles, LaneStylePart,
-} from '../../../utils/themeTypes';
+} from '../../../utils/types/themeTypes';
 
 const defaultLaneStylePreset: LaneStylePreset = {
   defaultStyle: defaultLaneStyle,

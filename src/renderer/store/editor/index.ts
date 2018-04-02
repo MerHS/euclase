@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 
-import { Coord, NoteIndex, Rect, EditMode, Note, LaneIndex } from '../../utils/scoreTypes';
+import { Coord, NoteIndex, Rect, EditMode, Note, LaneIndex } from '../../utils/types/scoreTypes';
 import { MP_LEN, MP_POS, ScoreGetters, MeasureFraction } from './score';
-import { binarySearch, mergeSortedList, binarySearchIndex } from '../../utils/noteUtil';
 import Fraction from '../../utils/fraction';
 import { RootState } from '..';
 
@@ -188,7 +187,7 @@ export const getters: GetterTree<EditorState, RootState> = {
       yPixelToPulse = getters.yPixelToPulse;
 
     return (yPixel: number) => {
-      const gridPixel = binarySearch(subGridYList, pixel => pixel >= yPixel);
+      const gridPixel = subGridYList.binaryFindFloor(yPixel);
 
       return (gridPixel == null) ? 0 : yPixelToPulse(gridPixel);
     };
@@ -293,7 +292,7 @@ const actions: ActionTree<EditorState, RootState> = {
     const yPixelToGridPulse = getters.yPixelToGridPulse;
 
     const pulse = yPixelToGridPulse(coord[1]);
-    const laneIndex = binarySearchIndex(getters.laneXList, laneX => laneX >= coord[0]) - 1;
+    const laneIndex = getters.laneXList.binaryFindFloorIndex(coord[0]);
     
     if (laneIndex != null) {
       commit('setPreviewNoteStyle', { pulse, laneIndex });

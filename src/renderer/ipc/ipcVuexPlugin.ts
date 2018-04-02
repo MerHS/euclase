@@ -1,7 +1,7 @@
 import { Store } from 'vuex';
 import { ipcRenderer } from 'electron';
 import { RootState } from '../store';
-import { EditMode } from '../utils/scoreTypes';
+import { EditMode } from '../utils/types/scoreTypes';
 
 type IPCListener = { channel: string, listener: Function };
 

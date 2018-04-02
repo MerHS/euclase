@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 
 import { CanvasInfo } from '../store/editor';
-import { LaneStylePart, LaneTheme } from './themeTypes';
+import { LaneStylePart, LaneTheme } from './types/themeTypes';
 import Fraction from './fraction';
-import { Coord, Rect } from './scoreTypes';
+import { Coord, Rect } from './types/scoreTypes';
 
 
 export default class CanvasUtil {

@@ -4,6 +4,7 @@ import Vuetify from 'vuetify';
 import FastClick from 'fastclick';
 import { ipcRenderer } from 'electron';
 
+import './utils/sortedList';
 import App from './App.vue';
 import router from './router';
 import store from './store';

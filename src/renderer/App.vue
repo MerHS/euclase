@@ -45,7 +45,7 @@ import Vue from 'vue';
 
 import MainContainer from './components/MainContainer.vue';
 import SidebarLayout from './components/layout/sidebar/SidebarLayout.vue';
-import { EditMode } from './utils/scoreTypes';
+import { EditMode } from './utils/types/scoreTypes';
 
 export default Vue.extend({
   components: { MainContainer, SidebarLayout },

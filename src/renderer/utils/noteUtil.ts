@@ -1,40 +1,7 @@
 import { BPMNote, Note, NoteIndex, StopNote, TimeSignature, TrackIndex,
-  EventNoteProps, MusicNoteProps, PlayNote, PlayNoteProps } from './scoreTypes';
+  EventNoteProps, MusicNoteProps, PlayNote, PlayNoteProps } from './types/scoreTypes';
 
 import * as _ from 'lodash';
-
-/**
- * Get the index of first matched item with a matcher
- * @param list Ascending sorted list 
- * @param matcher should be used like `x => x >= number` 
- */
-export function binarySearchIndex<T>(list: Array<T>, matcher: (item: T) => boolean): number {
-  let
-    start = 0,
-    end = list.length,
-    index = Math.floor((start + end) / 2);
-
-  while (start < end) {
-    if (matcher(list[index])) {
-      end = index;
-    } else {
-      start = index + 1;
-    }
-
-    index = Math.floor((start + end) / 2);
-  }
-
-  return index >= list.length ? -1 : index;
-}
-export function binarySearchItemIndex<T>(list: Array<T>, item: T): number {
-  return binarySearchIndex(list, testItem => testItem === item);
-}
-
-export function binarySearch<T>(list: Array<T>, matcher: (item: T) => boolean): T | undefined {
-  const index = binarySearchIndex(list, matcher);
-
-  return index < 0 ? undefined : list[index];
-}
 
 export function mergeSortedList<T>(
   la: Array<T>, lb: Array<T>, comparator: (item1: T, item2: T) => boolean,

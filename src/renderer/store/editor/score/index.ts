@@ -5,7 +5,7 @@
 import {
   Beat, EventType, NoteIndex, NoteType, ScoreMetaData,
   SoundIndex, SoundSprite, SoundType, TimeSignature,
-} from '../../../utils/scoreTypes';
+} from '../../../utils/types/scoreTypes';
 import { NoteFactory, NoteManager } from '../../../utils/noteUtil';
 import Fraction from '../../../utils/fraction';
 import { RootState } from '../..';
