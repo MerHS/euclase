@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars */
 
 import { Coord, NoteIndex, Rect, EditMode, Note, LaneIndex } from '../../utils/types/scoreTypes';
-import { MP_LEN, MP_POS, ScoreGetters, MeasureFraction } from './score';
+import { MP_LEN, MP_POS, ScoreGetters, MeasureFracPos } from './score';
 import Fraction from '../../utils/fraction';
 import { RootState } from '..';
 
 import { theme, ThemeState, ThemeGetters } from './theme';
 import { panel, PanelState  } from './panel';
 import { note, NoteState } from './note';
-import { score, MeasurePulse, ScoreState } from './score';
+import { score, MeasurePulsePos, ScoreState } from './score';
 import * as R from 'ramda';
 import { MutationTree, ActionTree, GetterTree, Module } from 'vuex';
 
@@ -99,24 +99,26 @@ export const getters: GetterTree<EditorState, RootState> = {
   },
   measureYList(state: EditorState, getters: EditorGetters): CanvasInfo['measureYList'] {
     const
-      measurePulseList: Array<MeasurePulse> = getters.measurePulseList,
+      measurePulsePosList: Array<MeasurePulsePos> = getters.measurePulsePosList,
       pulseToYPixel: (pulse: number) => number = getters.pulseToYPixel;
 
-    return measurePulseList.map(pulse => pulseToYPixel(pulse[MP_POS]));
+    return measurePulsePosList.map(pulse => pulseToYPixel(pulse[MP_POS]));
   },
   mainGridYList(_state: EditorState, getters: EditorGetters): CanvasInfo['mainGridYList'] {
     const state = _state as EditorGetterState;
     const
       mainFrac = new Fraction(1, state.panel.mainGrid),
       resolution: number = getters.resolution,
-      measureFracList: Array<MeasureFraction> = getters.measureFracList,
+      measureFracPosList: Array<MeasureFracPos> = getters.measureFracPosList,
       pulseToYPixel: (pulse: number) => number = getters.pulseToYPixel;
     
     // R.chain === _.flatMap
     return R.chain(([no, len, pos]) => {
       const gridCount = len.div(mainFrac).floorValue();
-      return R.range(1, gridCount).map(n => pos.add(mainFrac.mulInt(n)));
-    }, measureFracList).map(
+
+      return R.range(1, gridCount)
+        .map(n => pos.add(mainFrac.mulInt(n)));
+    }, measureFracPosList).map(
       (frac: Fraction) => pulseToYPixel(frac.mulInt(resolution).value()),
     );
   },
@@ -125,13 +127,16 @@ export const getters: GetterTree<EditorState, RootState> = {
     const
       subFrac = new Fraction(1, state.panel.subGrid),
       resolution: number = getters.resolution,
-      measureFracList: Array<MeasureFraction> = getters.measureFracList,
+      measureFracPosList: Array<MeasureFracPos> = getters.measureFracPosList,
       pulseToYPixel: (pulse: number) => number = getters.pulseToYPixel;
 
+    // R.chain === _.flatMap
     return R.chain(([no, len, pos]) => {
       const gridCount = len.div(subFrac).floorValue();
-      return R.range(1, gridCount).map(n => pos.add(subFrac.mulInt(n)));
-    }, measureFracList).map(
+
+      return R.range(1, gridCount)
+        .map(n => pos.add(subFrac.mulInt(n)));
+    }, measureFracPosList).map(
       (frac: Fraction) => pulseToYPixel(frac.mulInt(resolution).value()),
     );
   },
@@ -181,15 +186,28 @@ export const getters: GetterTree<EditorState, RootState> = {
 
     return (pulse: number) => heightPixel * (pulse / maxPulse);
   },
-  yPixelToGridPulse(state: EditorState, getters: EditorGetters): (yPixel: number) => number {
+  yPixelToGridPulse(_state: EditorState, getters: EditorGetters): (yPixel: number) => number {
+    const state = _state as EditorGetterState;
     const
-      subGridYList = getters.subGridYList,
-      yPixelToPulse = getters.yPixelToPulse;
+      measurePulsePosList = getters.measurePulsePosList,
+      measurePulseList = measurePulsePosList.map(mp => mp[MP_POS]),
+      yPixelToPulse = getters.yPixelToPulse,
+      subGridPulse = getters.resolution / state.panel.subGrid;
 
     return (yPixel: number) => {
-      const gridPixel = subGridYList.binaryFindFloor(yPixel);
+      const yPulse = yPixelToPulse(yPixel);
+      
+      let measureIndex = measurePulseList.binaryFindFloorIndex(yPulse);
+      if (measureIndex < 0) {
+        measureIndex = 0;
+      }
 
-      return (gridPixel == null) ? 0 : yPixelToPulse(gridPixel);
+      const measurePulsePos = measurePulsePosList[measureIndex];
+      const yPulseRemainder = yPulse - measurePulsePos[MP_POS];
+      const gridPulse =
+        measurePulsePos[MP_POS] + subGridPulse * Math.floor(yPulseRemainder / subGridPulse);
+
+      return gridPulse;
     };
   },
   previewNoteStyle(_state: EditorState, getters: EditorGetters): Partial<CSSStyleDeclaration> {

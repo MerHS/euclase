@@ -14,7 +14,7 @@ const iidxLaneStylePreset: LaneStylePreset = {
     laneBackgroundColor: transparent,
   },
   bpm: {
-    width: 60,
+    width: 50,
     editGroup: 3,
     noteColor: transparent,
     noteLabelColor: red,
@@ -23,7 +23,7 @@ const iidxLaneStylePreset: LaneStylePreset = {
     laneBackgroundColor: transparent,
   },
   stop: {
-    width: 60,
+    width: 50,
     editGroup: 9,
     noteColor: transparent,
     noteLabelColor: red,

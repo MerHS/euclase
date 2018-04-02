@@ -24,7 +24,7 @@
       }),
       ...mapState('editor/score', ['noteManager']),
       ...mapState('editor/panel', ['verticalZoom', 'horizontalZoom']),
-      ...mapGetters('editor/score', ['measurePulseList']),
+      ...mapGetters('editor/score', ['measurePulsePosList']),
       ...mapGetters('editor', [
         'widthPixel', 'heightPixel', 'canvasInfo',
       ]),
