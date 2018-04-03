@@ -10,7 +10,7 @@ import { mapGetters, mapState } from 'vuex';
 
 import CanvasUtil from '../../../utils/canvasUtil';
 import { LaneTheme } from '../../../utils/types/themeTypes';
-import { CanvasInfo } from '../../../store/editor';
+import { CanvasInfo } from '../../../store/editor/EditorGetters';
 
 export default Vue.extend({
   name: 'back-canvas',

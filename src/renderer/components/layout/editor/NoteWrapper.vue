@@ -67,12 +67,14 @@ export default Vue.extend({
     },
     mouseMove(e: MouseEvent) {
       this.getPosition(e);
-      if (this.isDragging) {
+      
+      if (this.editMode === EditMode.WRITE_MODE) {
+        e.preventDefault();
+        // function은 한가지만 하기! add dragNote
+        this.$store.dispatch('editor/setPreviewNote', [this.dragPosX, this.height - this.dragPosY]);
+      } else if (this.isDragging) {
         e.preventDefault();
         this.$store.commit('editor/dragMove', [this.dragPosX, this.height - this.dragPosY]);
-      } else if (this.editMode === EditMode.WRITE_MODE) {
-        e.preventDefault();
-        this.$store.dispatch('editor/setPreviewNote', [this.dragPosX, this.height - this.dragPosY]);
       }
     },
     mouseUp(e: MouseEvent) {

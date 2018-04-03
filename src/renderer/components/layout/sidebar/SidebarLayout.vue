@@ -41,6 +41,7 @@ export default Vue.extend({
       title: '',
       mainGrid: 4,
       subGrid: 16,
+      gridMax: 64,
       verticalZoom: 1,
       horizontalZoom: 1,
     };
@@ -50,6 +51,8 @@ export default Vue.extend({
       value = +value;
       if ((value <= 0) || (value != Math.floor(value))) {
         return 'must be positive integer';
+      } else if (value > this.gridMax) {
+        return `should be less than ${this.gridMax}`
       }
       return true;
     },
@@ -59,13 +62,13 @@ export default Vue.extend({
   },
   watch: {
     mainGrid(val: number) {
-      if (val > 0) {
+      if (this.gridMax >= val && val > 0) {
         val = Math.floor(val);
         this.assignPanelState({ mainGrid: val });
       }
     },
     subGrid(val: number) {
-      if (val > 0) {
+      if (this.gridMax >= val && val > 0) {
         val = Math.floor(val);
         this.assignPanelState({ subGrid: val });
       }
@@ -106,12 +109,13 @@ export default Vue.extend({
   padding 7px
 
 .no-details
-  padding 11px 9px 9px 4px
+  padding 0px 9px 14px 4px
+
   & > .input-group__details
     display none
 
 .icon-arrow
-  margin auto 0
+  margin-top 1px
   text-align center
 
 

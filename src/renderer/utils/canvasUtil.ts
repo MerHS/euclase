@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { CanvasInfo } from '../store/editor';
+import { CanvasInfo } from '../store/editor/EditorGetters';
 import { LaneStylePart, LaneTheme } from './types/themeTypes';
 import Fraction from './fraction';
 import { Coord, Rect } from './types/scoreTypes';
@@ -99,14 +99,12 @@ export default class CanvasUtil {
     }
     ctx.stroke();
 
-    // Draw Panel Number  TODO: to text dom
+    // Draw Panel Number 
     ctx.font = '13px sans-serif';
     ctx.fillStyle = gridColors.sectionNumberColor;
-    // ctx.strokeStyle = gridColors.sectionNumberColor;
     for (let measureNo = 0; measureNo < canvasInfo.measureYList.length; measureNo += 1) {
       const laneY = canvasInfo.measureYList[measureNo];
       const laneStr = _.padStart(`${measureNo}`, 3, '0');
-      // ctx.strokeText(`[${laneStr}]`, 0, canvasHeight - (laneY + 3));
       ctx.fillText(`[${laneStr}]`, 0, canvasHeight - (laneY + 3));
     }
   }
